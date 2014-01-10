@@ -1,0 +1,10 @@
+andrey_crud:
+    resource: "@AndreyCrudBundle/Resources/config/routing.yml"
+    prefix:   /
+
+#homepage:
+#    pattern:  /my/
+#    defaults: { _controller: AndreyCrudBundle:Default:index }
+#
+#crud:
+#    resource: "@AndreyCrudBundle/Resources/config/routing.yml"

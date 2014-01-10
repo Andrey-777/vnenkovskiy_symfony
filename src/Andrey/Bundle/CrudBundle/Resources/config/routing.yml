@@ -1,0 +1,7 @@
+andrey_crud_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: AndreyCrudBundle:Default:index }
+
+#andrey_crud_homepage:
+#    pattern:  /my/
+#    defaults: { _controller: AndreyCrudBundle:Default:index }
