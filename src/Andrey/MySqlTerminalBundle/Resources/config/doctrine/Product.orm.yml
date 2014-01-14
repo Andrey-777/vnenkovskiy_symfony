@@ -1,0 +1,24 @@
+Andrey\MySqlTerminalBundle\Entity\Product:
+    type: entity
+    table: null
+    repositoryClass: Andrey\MySqlTerminalBundle\Entity\ProductRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: '255'
+        price:
+            type: float
+            length: null
+        description:
+            type: text
+            length: null
+        blabla:
+            type: string
+            length: 255
+    lifecycleCallbacks: {  }

@@ -1,0 +1,16 @@
+<table border="1" cellpadding="7">
+    {% for item1 in res %}
+        <tr>
+        {% for item2 in item1 %}
+            <td>
+                <p>{{ item2 }} </p>
+            </td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+<?php
+    echo var_dump('AAAAAAAAAAAAAAAAAA');
+?>
+
+

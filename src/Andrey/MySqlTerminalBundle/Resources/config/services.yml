@@ -1,0 +1,11 @@
+parameters:
+#    andrey_my_sql_terminal.example.class: Andrey\MySqlTerminalBundle\Example
+
+services:
+#    andrey_my_sql_terminal.example:
+#        class: %andrey_my_sql_terminal.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+services:
+    mysqlterminal.service:
+        class: Andrey\MySqlTerminalBundle\Models\MysqlterminalModel

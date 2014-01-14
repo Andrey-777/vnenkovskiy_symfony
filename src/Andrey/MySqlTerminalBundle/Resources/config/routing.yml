@@ -1,0 +1,7 @@
+andrey_my_sql_terminal_homepage:
+    pattern:  /mysql_terminal/
+    defaults: { _controller: AndreyMySqlTerminalBundle:Default:index }
+
+andrey_my_sql_terminal_create:
+    pattern:  /mysql_terminal/create/
+    defaults: { _controller: AndreyMySqlTerminalBundle:Default:create }
