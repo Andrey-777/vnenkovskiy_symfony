@@ -1,33 +1,34 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: avnenkovskyi
- * Date: 1/14/14
- * Time: 10:55 AM
- */
 namespace Andrey\MySqlTerminalBundle\Models;
 
 class MysqlterminalModel {
-    public function buildForm($obj)
-    {
-        $form = $obj->createFormBuilder()
-            ->add('Host:', 'text')
-            ->add('User:', 'text')
-            ->add('Password:', 'password')
-            ->add('Database:', 'text')
-            ->add('Query:', 'textarea')
-            ->getForm();
+    public $errorMessage = '';
 
-        return $form;
+    public function getConnectDB($em)
+    {
+        try {
+            return $em->getConnection();
+        } catch (\Exception $e) {
+            $this->errorMessage = $e->getMessage();
+        }
     }
 
-    public function isPOST($request)
+    public function getStatementDB($connection, $query)
     {
-        return $request->getMethod() == 'POST' ? true : false;
+        try {
+            return $connection->prepare($query);
+        } catch (\Exception $e) {
+            $this->errorMessage = $e->getMessage();
+        }
     }
 
-    public function getMyDoctrine()
+    public function getResult($statement)
     {
-        return $this->getDoctrine();
+        try {
+            $statement->execute();
+            return $statement->fetchAll();
+        } catch (\Exception $e) {
+            $this->errorMessage = $e->getMessage();
+        }
     }
 } 

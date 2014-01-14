@@ -2,3 +2,19 @@
     {{ form_widget(form) }}
     <input type="submit" />
 </form>
+{% if errorMessage == true %}
+    <h4>{{ errorMessage }}</h4>
+{% endif %}
+{% if (showResult == true and errorMessage == false) %}
+    <table border="1" cellpadding="7">
+        {% for item1 in results %}
+            <tr>
+                {% for item2 in item1 %}
+                    <td>
+                        <p>{{ item2 }} </p>
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endif %}
