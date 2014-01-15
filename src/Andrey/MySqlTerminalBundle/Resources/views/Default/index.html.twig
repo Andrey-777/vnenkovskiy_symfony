@@ -2,9 +2,21 @@
     {{ form_widget(form) }}
     <input type="submit" />
 </form>
+
+{% if queriesHistory == true %}
+    <p>Correct queries:</p>
+    <select size="1">
+        <option selected="selected" disabled="disabled">--NONE--</option>
+        {% for item in queriesHistory %}
+            <option value="{{ item }}">{{ item }}</option>
+        {% endfor %}
+    </select>
+{% endif %}
+
 {% if errorMessage == true %}
     <h4>{{ errorMessage }}</h4>
 {% endif %}
+
 {% if (showResult == true and errorMessage == false) %}
     <table border="1" cellpadding="7">
         {% for item1 in results %}
