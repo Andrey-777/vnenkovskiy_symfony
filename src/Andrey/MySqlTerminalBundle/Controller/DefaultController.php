@@ -15,7 +15,6 @@ class DefaultController extends Controller
         return $this->render('AndreyMySqlTerminalBundle:Default:index.html.twig',
             $service->checkRequest($request,
                 $this->createForm(new MysqlterminalForm),
-                $this->getDoctrine()->getManager(),
                 $session));
     }
 }

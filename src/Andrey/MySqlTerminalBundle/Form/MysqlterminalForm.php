@@ -13,15 +13,16 @@ use Symfony\Component\Form\FormBuilderInterface;
 class MysqlterminalForm extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('Host:', 'text')
-                ->add('User:', 'text')
-                ->add('Password:', 'password', array('required' => false))
-                ->add('Database:', 'text')
-                ->add('Query:', 'textarea');
+        $builder->add('host', 'text')
+                ->add('username', 'text')
+                ->add('password', 'password', array('required' => false))
+                ->add('changePass', 'checkbox', array('required' => false))
+                ->add('database', 'text')
+                ->add('query', 'textarea');
     }
 
     public function getName()
     {
-        return 'mysql_terminal';
+            return 'mysql_terminal';
     }
 } 

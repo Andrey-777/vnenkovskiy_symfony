@@ -1,17 +1,50 @@
+{% javascripts '@AndreyMySqlTerminalBundle/Resources/public/js/*' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% stylesheets '@AndreyMySqlTerminalBundle/Resources/public/css/*' filter='cssrewrite' %}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+{% endstylesheets %}
+
 <form method="post">
-    {{ form_widget(form) }}
+    <div id="main">
+        <div class="field">
+            <label class="label" for="host">Host:</label>
+            {{ form_widget(form.host, { 'id': 'host' }) }}
+        </div>
+        <div class="field">
+            <label class="label" for="username">User:</label>
+            {{ form_widget(form.username, { 'id': 'username' }) }}
+        </div>
+        <div class="field">
+            <label class="label" for="password">Password:</label>
+            {% if isPOST == true %}
+                {{ form_widget(form.password, { 'id': 'password', 'attr': {'disabled':'disabled'} }) }}
+                <label id="labelCheckbox" for="changePass">Change password</label>
+                {{ form_widget(form.changePass, { 'id': 'changePass', 'attr': {'onchange': 'disabledPass()'}}) }}
+            {% else %}
+                {{ form_widget(form.password, { 'id': 'password' } ) }}
+            {% endif %}
+        </div>
+        <div class="field">
+            <label class="label" for="database">Database:</label>
+            {{ form_widget(form.database, { 'id': 'database' }) }}
+        </div>
+    </div>
+
+    {{ form_widget(form.query, { 'id': 'sqlAreaId', 'attr': {'class': 'sqlArea', 'rows': '10', 'cols': '45'} }) }}
+
+    {% if queriesHistory == true %}
+        <p id="trueQueryText">Correct queries:</p>
+        <select id="selectListId" class="selectList" size="1" onchange="selectQuery()">
+            <option selected="selected" disabled="disabled">--NONE--</option>
+            {% for query in queriesHistory %}
+                <option value="{{ query }}">{{ query }}</option>
+            {% endfor %}
+        </select>
+    {% endif %}
+    <div class="separator"></div>
     <input type="submit" />
 </form>
-
-{% if queriesHistory == true %}
-    <p>Correct queries:</p>
-    <select size="1">
-        <option selected="selected" disabled="disabled">--NONE--</option>
-        {% for item in queriesHistory %}
-            <option value="{{ item }}">{{ item }}</option>
-        {% endfor %}
-    </select>
-{% endif %}
 
 {% if errorMessage == true %}
     <h4>{{ errorMessage }}</h4>
@@ -19,6 +52,11 @@
 
 {% if (showResult == true and errorMessage == false) %}
     <table border="1" cellpadding="7">
+
+        {% for key in results[0]|keys %}
+            <th>{{ key }}</th>
+        {% endfor %}
+
         {% for item1 in results %}
             <tr>
                 {% for item2 in item1 %}

@@ -4,10 +4,17 @@ namespace Andrey\MySqlTerminalBundle\Models;
 class MysqlterminalModel {
     public $errorMessage = '';
 
-    public function getConnectDB($em)
+    public function getConnectDB($dbname, $user, $password, $host)
     {
         try {
-            return $em->getConnection();
+            return \Doctrine\DBAL\DriverManager::getConnection(array(
+                    'dbname'   => $dbname,
+                    'user'     => $user,
+                    'password' => $password,
+                    'host'     => $host,
+                    'driver'   => 'pdo_mysql',
+                ), new \Doctrine\DBAL\Configuration());
+
         } catch (\Exception $e) {
             $this->errorMessage = $e->getMessage();
         }

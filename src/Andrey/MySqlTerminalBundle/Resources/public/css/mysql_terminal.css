@@ -1,0 +1,43 @@
+#main {
+    margin-bottom: 10px;
+    width: 265px;
+}
+
+.field {
+    text-align:right;
+    margin-bottom: 3px;
+    display: block;
+}
+
+.label {
+    float:left;
+    padding-right:10px;
+}
+
+.sqlArea {
+    float: left;
+}
+
+.selectList {
+    width: 200px;
+    display: block;
+    margin: 5px 0 0 405px;
+}
+#trueQueryText {
+    display: block;
+    margin: 5px 0 10 405px;
+}
+table {
+    border-collapse: collapse;
+    margin: 20px auto;
+}
+
+#changePass {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.separator {
+    clear: both;
+    margin-bottom: 10px;
+}
