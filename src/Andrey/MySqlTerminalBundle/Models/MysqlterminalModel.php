@@ -1,21 +1,31 @@
 <?php
 namespace Andrey\MySqlTerminalBundle\Models;
 
+use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Configuration;
+use Exception;
 class MysqlterminalModel {
     public $errorMessage = '';
 
     public function getConnectDB($dbname, $user, $password, $host)
     {
         try {
-            return \Doctrine\DBAL\DriverManager::getConnection(array(
-                    'dbname'   => $dbname,
-                    'user'     => $user,
-                    'password' => $password,
-                    'host'     => $host,
-                    'driver'   => 'pdo_mysql',
-                ), new \Doctrine\DBAL\Configuration());
-
-        } catch (\Exception $e) {
+//            $con =  DriverManager::getConnection(array(
+//                'dbname'   => $dbname,
+//                'user'     => $user,
+//                'password' => $password,
+//                'host'     => $host,
+//                'driver'   => 'pdo_mysql'), new Configuration);
+//
+//            $con->query("set names utf8");
+//            return $con;
+            return DriverManager::getConnection(array(
+                                                        'dbname'   => $dbname,
+                                                        'user'     => $user,
+                                                        'password' => $password,
+                                                        'host'     => $host,
+                                                        'driver'   => 'pdo_mysql'), new Configuration);
+        } catch(Exception $e) {
             $this->errorMessage = $e->getMessage();
         }
     }
@@ -24,7 +34,7 @@ class MysqlterminalModel {
     {
         try {
             return $connection->prepare($query);
-        } catch (\Exception $e) {
+        } catch(Exception $e) {
             $this->errorMessage = $e->getMessage();
         }
     }
@@ -34,7 +44,7 @@ class MysqlterminalModel {
         try {
             $statement->execute();
             return $statement->fetchAll();
-        } catch (\Exception $e) {
+        } catch(Exception $e) {
             $this->errorMessage = $e->getMessage();
         }
     }

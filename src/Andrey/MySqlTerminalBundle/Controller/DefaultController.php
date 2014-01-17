@@ -13,8 +13,8 @@ class DefaultController extends Controller
         $service = $this->get('service.service');
 
         return $this->render('AndreyMySqlTerminalBundle:Default:index.html.twig',
-            $service->checkRequest($request,
+            $service->getFormData($request,
                 $this->createForm(new MysqlterminalForm),
-                $session));
+                $session, $this->get('model.service')));
     }
 }

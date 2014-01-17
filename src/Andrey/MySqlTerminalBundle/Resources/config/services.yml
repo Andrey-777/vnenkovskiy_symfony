@@ -5,11 +5,3 @@ services:
 #    andrey_my_sql_terminal.example:
 #        class: %andrey_my_sql_terminal.example.class%
 #        arguments: [@service_id, "plain_value", %parameter%]
-
-services:
-    model.service:
-        class: Andrey\MySqlTerminalBundle\Models\MysqlterminalModel
-
-services:
-    service.service:
-        class: Andrey\MySqlTerminalBundle\Services\MysqlterminalService

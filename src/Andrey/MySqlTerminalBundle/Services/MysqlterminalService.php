@@ -2,18 +2,14 @@
 namespace Andrey\MySqlTerminalBundle\Services;
 use Symfony\Component\HttpFoundation\Request;
 
-use Andrey\MySqlTerminalBundle\Models\MysqlterminalModel;
-use Symfony\Component\HttpFoundation\Session\Session;
+//use Symfony\Component\HttpFoundation\Session\Session;
 class MysqlterminalService {
     protected $model = null;
 
-    public function __construct()
+    public function getFormData(Request $request, $form, $session, $model)
     {
-        $this->model = new MysqlterminalModel();
-    }
+        $this->model = $model;
 
-    public function checkRequest(Request $request, $form, $session)
-    {
         $param = array(
             'showResult'     => false,
             'errorMessage'   => false,
@@ -23,7 +19,8 @@ class MysqlterminalService {
         if ($param['isPOST'] = $this->isPOST($request)) {
             $form->bind($request);
             $postData = $form->getData();
-            $results  = $this->db($postData);
+            $this->verifyPassword($session, $postData);
+            $results  = $this->db($postData, $session->get('password'));
 
             if (!$this->model->errorMessage) {
                 $session->set('queriesHistory',
@@ -55,46 +52,31 @@ class MysqlterminalService {
         return array_unique($queries);
     }
 
-    protected function db($postData)
+    protected function db($postData, $password)
     {
-        $connection = $this->model->getConnectDB($postData['database'], $postData['username'],
-            $postData['password'], $postData['host']);
-        $statement  = $this->model->getStatementDB($connection, $postData['query']);
-        return $this->model->getResult($statement);
+        if($connection = $this->model->getConnectDB($postData['database'], $postData['username'],
+            $password, $postData['host'])) {
+            if($statement  = $this->model->getStatementDB($connection, $postData['query'])) {
+                return $this->model->getResult($statement);
+            }
+        }
+
+        return false;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    protected function populatSession(&$session, $postData)
-//    {
-//        $session->set('user', $postData['User:']);
-//        $session->set('password', $postData['Password:']);
-//    }
-//
-//    protected function passVerify()
-//    {
-//        if (!(is_null($this->getSessUser()) && is_null($this->getSessPassword()))) {
-//            if ($this->getSessUser() != $this->getUser()) {
-//                $this->setSessUser($this->getUser())
-//                    ->setSessPassword($this->getPassword());
-//            } elseif($this->getSessUser() == $this->getUser()
-//                && ($this->getSessPassword() != $this->getPassword() && $this->getPassword() != null)) {
-//                $this->setSessPassword($this->getPassword());
-//            }
-//        } else {
-//            $this->setSessUser($this->getUser())
-//                ->setSessPassword($this->getPassword());
-//        }
-//    }
+    protected function verifyPassword(&$session, &$postData)
+    {
+        if (!(is_null($session->get('username')) && is_null($session->get('password')))) {
+            if ($session->get('username') != $postData['username']) {
+                $session->set('username', $postData['username']);
+                $session->set('password', $postData['password']);
+            } elseif($session->get('username') == $postData['username']
+                && ($session->get('password') != $postData['password'] && $postData['password'] != null)) {
+                $session->set('password', $postData['password']);
+            }
+        } else {
+            $session->set('username', $postData['username']);
+            $session->set('password', $postData['password']);
+        }
+    }
 } 
