@@ -3,5 +3,5 @@ andrey_my_sql_terminal_homepage:
     defaults: { _controller: AndreyMySqlTerminalBundle:Default:index }
 
 andrey_my_sql_terminal_create:
-    pattern:  /mysql_terminal/create/
-    defaults: { _controller: AndreyMySqlTerminalBundle:Default:create }
+    pattern:  /mysql_terminal/show/
+    defaults: { _controller: AndreyMySqlTerminalBundle:Default:show }

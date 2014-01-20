@@ -1,8 +1,8 @@
 {% javascripts '@AndreyMySqlTerminalBundle/Resources/public/js/*' %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
+<script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}
 {% stylesheets '@AndreyMySqlTerminalBundle/Resources/public/css/*' filter='cssrewrite' %}
-    <link rel="stylesheet" href="{{ asset_url }}" />
+<link rel="stylesheet" href="{{ asset_url }}"/>
 {% endstylesheets %}
 
 <form method="post">
@@ -17,10 +17,10 @@
         </div>
         <div class="field">
             <label class="label" for="password">Password:</label>
-            {% if isPOST == true %}
+            {% if isPOST %}
                 {{ form_widget(form.password, { 'id': 'password', 'attr': {'disabled':'disabled'} }) }}
                 <label id="labelCheckbox" for="changePass">Change password</label>
-                {{ form_widget(form.changePass, { 'id': 'changePass', 'attr': {'onchange': 'disabledPass()'}}) }}
+                {{ form_widget(form.changePass, { 'id': 'changePass', 'attr': {'onchange': 'disabledPass()' }}) }}
             {% else %}
                 {{ form_widget(form.password, { 'id': 'password' } ) }}
             {% endif %}
@@ -33,7 +33,7 @@
 
     {{ form_widget(form.query, { 'id': 'sqlAreaId', 'attr': {'class': 'sqlArea', 'rows': '10', 'cols': '45'} }) }}
 
-    {% if queriesHistory == true %}
+    {% if queriesHistory %}
         <p id="trueQueryText">Correct queries:</p>
         <select id="selectListId" class="selectList" size="1" onchange="selectQuery()">
             <option selected="selected" disabled="disabled">--NONE--</option>
@@ -43,14 +43,14 @@
         </select>
     {% endif %}
     <div class="separator"></div>
-    <input type="submit" />
+    <input type="submit"/>
 </form>
 
-{% if errorMessage == true %}
+{% if errorMessage %}
     <h4>{{ errorMessage }}</h4>
 {% endif %}
 
-{% if (showResult == true and errorMessage == false) %}
+{% if (showResult and errorMessage == false ) %}
     <table border="1" cellpadding="7">
 
         {% for key in results[0]|keys %}

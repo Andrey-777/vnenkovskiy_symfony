@@ -1,9 +1,10 @@
 <?php
 namespace Andrey\MySqlTerminalBundle\Services;
+
 use Symfony\Component\HttpFoundation\Request;
 
-//use Symfony\Component\HttpFoundation\Session\Session;
-class MysqlterminalService {
+class MysqlterminalService
+{
     protected $model = null;
 
     public function getFormData(Request $request, $form, $session, $model)
@@ -11,39 +12,40 @@ class MysqlterminalService {
         $this->model = $model;
 
         $param = array(
-            'showResult'     => false,
-            'errorMessage'   => false,
+            'showResult' => false,
+            'errorMessage' => false,
             'queriesHistory' => false
         );
 
-        if ($param['isPOST'] = $this->isPOST($request)) {
+        if ($param['isPOST'] = $request->isMethod('POST')) {
             $form->bind($request);
             $postData = $form->getData();
             $this->verifyPassword($session, $postData);
-            $results  = $this->db($postData, $session->get('password'));
+            $results = $this->db($postData, $session->get('password'));
 
             if (!$this->model->errorMessage) {
-                $session->set('queriesHistory',
-                    $this->populatQueriesHistory((array)$session->get('queriesHistory'),
-                        $postData['query']));
+                $session->set(
+                    'queriesHistory',
+                    $this->populatQueriesHistory(
+                        (array)$session->get('queriesHistory'),
+                        $postData['query']
+                    )
+                );
 
                 $param['showResult'] = true;
-                $param['results']    = $results;
+                $param['results'] = $results;
             } else {
                 $param['errorMessage'] = $this->model->errorMessage;
             }
 
             $param['queriesHistory'] = $session->get('queriesHistory');
+        } else {
+            $session->set('queriesHistory', null);
         }
 
+
         $param['form'] = $form->createView();
-
         return $param;
-    }
-
-    protected function isPOST($request)
-    {
-        return $request->getMethod() == 'POST' ? : false;
     }
 
     protected function populatQueriesHistory(Array $queries, $query)
@@ -54,9 +56,10 @@ class MysqlterminalService {
 
     protected function db($postData, $password)
     {
-        if($connection = $this->model->getConnectDB($postData['database'], $postData['username'],
-            $password, $postData['host'])) {
-            if($statement  = $this->model->getStatementDB($connection, $postData['query'])) {
+        if ($connection = $this->model->getConnectDB($postData['database'], $postData['username'],
+            $password, $postData['host'])
+        ) {
+            if ($statement = $this->model->getStatementDB($connection, $postData['query'])) {
                 return $this->model->getResult($statement);
             }
         }
@@ -70,8 +73,9 @@ class MysqlterminalService {
             if ($session->get('username') != $postData['username']) {
                 $session->set('username', $postData['username']);
                 $session->set('password', $postData['password']);
-            } elseif($session->get('username') == $postData['username']
-                && ($session->get('password') != $postData['password'] && $postData['password'] != null)) {
+            } elseif ($session->get('username') == $postData['username']
+                && ($session->get('password') != $postData['password'] && $postData['password'] != null)
+            ) {
                 $session->set('password', $postData['password']);
             }
         } else {
