@@ -1,3 +1,3 @@
 andrey_rss_reader_homepage:
-    pattern:  /hello/{name}
+    pattern:  /rss_reader
     defaults: { _controller: AndreyRssReaderBundle:Default:index }

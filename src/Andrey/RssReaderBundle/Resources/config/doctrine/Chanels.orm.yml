@@ -1,0 +1,16 @@
+Andrey\RssReaderBundle\Entity\Chanels:
+    type: entity
+    table: null
+    repositoryClass: Andrey\RssReaderBundle\Entity\ChanelsRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        title:
+            type: text
+        link:
+            type: text
+    lifecycleCallbacks: {  }
