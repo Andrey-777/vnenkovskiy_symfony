@@ -5,3 +5,6 @@ services:
 #    andrey_rss_reader.example:
 #        class: %andrey_rss_reader.example.class%
 #        arguments: [@service_id, "plain_value", %parameter%]
+     RssReaderService.service:
+         class: Andrey\RssReaderBundle\Services\RssReaderService
+
