@@ -1,3 +1,7 @@
+andrey_examples:
+    resource: "@AndreyExamplesBundle/Resources/config/routing.yml"
+    prefix:   /
+
 andrey_crud:
     resource: "@AndreyCrudBundle/Resources/config/routing.yml"
     prefix:   /
