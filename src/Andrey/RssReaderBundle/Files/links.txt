@@ -1,0 +1,7 @@
+http://biz.liga.net/all/rss.xml
+
+
+http://smi.liga.net/all/rss.xml
+
+http://rss.unian.net/site/news_ukr.rss
+http://ru.tsn.ua/rss/
