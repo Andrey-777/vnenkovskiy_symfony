@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Andrey\Bundle\CrudBundle\AndreyCrudBundle(),
             new Andrey\ExamplesBundle\AndreyExamplesBundle(),
+            new Andrey\RssReaderBundle\AndreyRssReaderBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
