@@ -1,3 +1,6 @@
 andrey_rss_reader_homepage:
     pattern:  /rss_reader
     defaults: { _controller: AndreyRssReaderBundle:Default:index }
+andrey_rss_reader_updatepage:
+    pattern:  /rss_reader/update
+    defaults: { _controller: AndreyRssReaderBundle:Default:update }
