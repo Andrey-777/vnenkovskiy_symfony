@@ -25,6 +25,11 @@ class RssReaderUpdateCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln('Successfully');
+        $service = $this->getContainer()->get('RssReaderService.service');
+        $kernel  = $this->getContainer()->get('kernel');
+        $em      = $this->getContainer()->get('doctrine')->getManager();
+        $model   = $this->getContainer()->get('RssReaderModel.model');
+
+        $output->writeln($service->updateMethod($kernel, $em, $model));
     }
 }

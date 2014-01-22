@@ -3,7 +3,7 @@
 namespace Andrey\RssReaderBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use \Exception;
+use Symfony\Component\HttpFoundation\Response;
 class DefaultController extends Controller
 {
     public function indexAction()
@@ -15,15 +15,14 @@ class DefaultController extends Controller
 
     public function updateAction()
     {
-        try {
-            $service = $this->get('RssReaderService.service');
+        $service = $this->get('RssReaderService.service');
+        $kernel  = $this->get('kernel');
+        $em      = $this->getDoctrine()->getManager();
+        $model   = $this->get('RssReaderModel.model');
 
-            return $this->render(
-                'AndreyRssReaderBundle:Default:updateResponse.html.twig',
-                    $service->updateMethod($this->get('kernel'))
-            );
-        } catch(Exception $e) {
-            echo $e->getMessage();
-        }
+        return $this->render(
+            'AndreyRssReaderBundle:Default:updateResponse.html.twig',
+                $service->updateMethod($kernel, $em, $model)
+        );
     }
 }

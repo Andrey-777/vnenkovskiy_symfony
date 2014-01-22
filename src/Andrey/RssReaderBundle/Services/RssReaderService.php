@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: avnenkovskyi
- * Date: 1/21/14
- * Time: 4:55 PM
- */
-
 namespace Andrey\RssReaderBundle\Services;
 
 use Symfony\Component\DependencyInjection\SimpleXMLElement;
@@ -14,12 +7,15 @@ class RssReaderService {
     protected $_listChannels = array();
     protected $_listNews     = array();
 
-    public function updateMethod($kernel)
+    public function updateMethod($kernel, $em, $model)
     {
         $linksToRss = $this->_getContentFile($kernel);
         $contentRss = $this->_getContentRss($linksToRss);
         $this->_populateNewsAndChanel($contentRss);
 
+        $model->insertChanels($em, $this->_listChannels);
+
+//        return "GOOD INSERT CHANEL";
         return array();
     }
 
@@ -51,7 +47,11 @@ class RssReaderService {
             $this->_listChannels[$keyXMLFile]['title'] = (string)$sxml->channel->title;
             $this->_listChannels[$keyXMLFile]['link']  = (string)$sxml->channel->link;
 
+            $chanels[] = $sxml->channel;
+
             foreach ($sxml->channel->item as $keyNews => $itemNews) {
+                $news[] = $itemNews;
+
                 $itemNewsForArr['title']       = $itemNews->title;
                 $itemNewsForArr['link']        = $itemNews->link;
                 $itemNewsForArr['description'] = $itemNews->description;
@@ -63,10 +63,10 @@ class RssReaderService {
                 } else {
                     $itemNewsForArr['enclosure']   = property_exists($itemNews, 'enclosure') ? $itemNews->enclosure['url'] : '';
                 }
-                $itemNewsForArr['pubDate']     = $itemNews->pubDate;
-                $itemNewsForArr['linkChanel']  = $sxml->channel->link;
-                $this->_listNews[]             = $itemNewsForArr;
+                $itemNewsForArr['pubDate']    = $itemNews->pubDate;
+                $itemNewsForArr['linkChanel'] = $sxml->channel->link;
+                $this->_listNews[]            = $itemNewsForArr;
             }
         }
     }
-} 
+}
