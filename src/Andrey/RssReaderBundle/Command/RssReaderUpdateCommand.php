@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: avnenkovskyi
- * Date: 1/21/14
- * Time: 3:15 PM
- */
-
 namespace Andrey\RssReaderBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -25,11 +18,18 @@ class RssReaderUpdateCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $service = $this->getContainer()->get('RssReaderService.service');
-        $kernel  = $this->getContainer()->get('kernel');
-        $em      = $this->getContainer()->get('doctrine')->getManager();
-        $model   = $this->getContainer()->get('RssReaderModel.model');
+        $service  = $this->getContainer()->get('RssReaderService.service');
+        $kernel   = $this->getContainer()->get('kernel');
+        $doctrine = $this->getContainer()->get('doctrine');
+        $model    = $this->getContainer()->get('RssReaderModel.model');
 
-        $output->writeln($service->updateMethod($kernel, $em, $model));
+        $resultsUpdate = $service->updateMethod($kernel, $doctrine, $model);
+
+        $write  = 'Update';
+        $write .= !$resultsUpdate['chanels'] && !$resultsUpdate['news'] ? " unsuccessful\n" : " successful\n";
+        $write .= 'Count of new chanels: ' . $resultsUpdate['chanels']
+            . "\n" . 'Count of new news: ' . $resultsUpdate['news'];
+
+        $output->writeln($write);
     }
 }

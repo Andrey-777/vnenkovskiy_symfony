@@ -7,16 +7,19 @@ class RssReaderService {
     protected $_listChannels = array();
     protected $_listNews     = array();
 
-    public function updateMethod($kernel, $em, $model)
+    public function updateMethod($kernel, $doctrine, $model)
     {
-        $linksToRss = $this->_getContentFile($kernel);
-        $contentRss = $this->_getContentRss($linksToRss);
-        $this->_populateNewsAndChanel($contentRss);
+        $response = array();
 
-        $model->insertChanels($em, $this->_listChannels);
+        $linksToRss     = $this->_getContentFile($kernel);
+        $contentRss     = $this->_getContentRss($linksToRss);
+        $chanelsAndNews = $this->_populateNewsAndChanel($contentRss);
 
-//        return "GOOD INSERT CHANEL";
-        return array();
+        $response['chanels']    = $model->insertChanels($doctrine, $chanelsAndNews['chanels']);
+        $chanelsAndNews['news'] = $this->chanelToNews($chanelsAndNews['news'], $model, $doctrine);
+        $response['news']       = $model->insertNews($doctrine, $chanelsAndNews['news']);
+
+        return $response;
     }
 
     protected function _getContentFile($kernel)
@@ -42,31 +45,49 @@ class RssReaderService {
 
     protected function _populateNewsAndChanel($contentsRss)
     {
+        $listChannels = array();
+        $listNews     = array();
+
         foreach ($contentsRss as $keyXMLFile => $itemXMLFile) {
             $sxml = new SimpleXMLElement($itemXMLFile, LIBXML_NOCDATA);
-            $this->_listChannels[$keyXMLFile]['title'] = (string)$sxml->channel->title;
-            $this->_listChannels[$keyXMLFile]['link']  = (string)$sxml->channel->link;
-
-            $chanels[] = $sxml->channel;
+            $listChannels[$keyXMLFile]['title'] = (string)$sxml->channel->title;
+            $listChannels[$keyXMLFile]['link']  = (string)$sxml->channel->link;
 
             foreach ($sxml->channel->item as $keyNews => $itemNews) {
-                $news[] = $itemNews;
-
-                $itemNewsForArr['title']       = $itemNews->title;
-                $itemNewsForArr['link']        = $itemNews->link;
-                $itemNewsForArr['description'] = $itemNews->description;
+                $news['title']       = $itemNews->title;
+                $news['link']        = $itemNews->link;
+                $news['description'] = strip_tags($itemNews->description);
+                $news['hashCode']    = md5($itemNews->description);
 
                 if ((string)$sxml->channel->link == 'http://tsn.ua/') {
                     preg_match_all('/<img(?:\\s[^<>]*?)?\\bsrc\\s*=\\s*(?|"([^"]*)"|\'([^\']*)\'|([^<>\'"\\s]*))[^<>]*>/i',
                         (string)$itemNews->description, $matches);
-                    $itemNewsForArr['enclosure'] = $matches[1][0];
+                    $news['enclosure'] = $matches[1][0];
                 } else {
-                    $itemNewsForArr['enclosure']   = property_exists($itemNews, 'enclosure') ? $itemNews->enclosure['url'] : '';
+                    $news['enclosure']   = property_exists($itemNews, 'enclosure') ? $itemNews->enclosure['url'] : '';
                 }
-                $itemNewsForArr['pubDate']    = $itemNews->pubDate;
-                $itemNewsForArr['linkChanel'] = $sxml->channel->link;
-                $this->_listNews[]            = $itemNewsForArr;
+                $news['pubDate']    = $itemNews->pubDate;
+                $news['linkChanel'] = $sxml->channel->link;
+                $listNews[] = $news;
             }
         }
+
+        return array('chanels' => $listChannels, 'news' => $listNews);
+    }
+
+    protected function chanelToNews($listNews, $model, $doctrine)
+    {
+        $allChanels = $model->getAllChanels($doctrine);
+
+        foreach ($allChanels as $row) {
+            foreach ($listNews as $key => $itemNews) {
+
+                if ($itemNews['linkChanel'] == $row->getLink()) {
+                    $listNews[$key]['linkChanel'] = $row->getId();
+                }
+            }
+        }
+
+        return $listNews;
     }
 }

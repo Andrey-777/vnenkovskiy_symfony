@@ -1,35 +1,103 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: avnenkovskyi
- * Date: 1/21/14
- * Time: 4:54 PM
- */
-
 namespace Andrey\RssReaderBundle\Models;
 
 use Andrey\RssReaderBundle\Entity\Chanels;
 use Andrey\RssReaderBundle\Entity\News;
 class Model {
-    public function insertChanels($em, Array $listChanels)
+    public function insertChanels($doctrine, Array $listChanels)
     {
-        $batchSize = 10;
+        if(!$listChanels = $this->filterChanels($doctrine, $listChanels)) {
+            return 0;
+        }
 
-        for ($i = 1; $i <= count($listChanels); ++$i) {
+        $em = $doctrine->getManager();
+        $i = 0;
+
+        foreach ($listChanels as $itemChanel) {
             $chanel = new Chanels();
-            $itemChanel = $listChanels[$i - 1];
             $chanel->setTitle($itemChanel['title']);
             $chanel->setLink($itemChanel['link']);
 
             $em->persist($chanel);
 
-            if (($i % $batchSize) == 0) {
+            if (($i % 20) == 0) {
                 $em->flush();
                 $em->clear();
             }
+
+            $i++;
         }
 
         $em->flush();
         $em->clear();
+
+        return $i;
+    }
+
+    public function insertNews($doctrine, Array $listNews)
+    {
+        if(!$listNews = $this->filterNews($doctrine, $listNews)) {
+            return 0;
+        }
+
+        $em = $doctrine->getManager();
+
+        $i = 1;
+
+        foreach ($listNews as $itemNews) {
+            $news = new News();
+            $news->setTitle($itemNews['title']);
+            $news->setLink($itemNews['link']);
+            $news->setDescription($itemNews['description']);
+            $news->setImage($itemNews['enclosure']);
+            $news->setPubDate($itemNews['pubDate']);
+            $news->setChanelId($itemNews['linkChanel']);
+            $news->setHashCode($itemNews['hashCode']);
+
+            $em->persist($news);
+
+            if (($i % 20) == 0) {
+                $em->flush();
+                $em->clear();
+            }
+
+            $i++;
+        }
+
+        $em->flush();
+        $em->clear();
+
+        return $i;
+    }
+
+    protected function filterChanels($doctrine, Array $listChanels)
+    {
+        $repository = $doctrine->getRepository('AndreyRssReaderBundle:Chanels');
+
+        foreach($listChanels as $key => $chanel) {
+            if ($res = $repository->findByLink($chanel['link'])) {
+                unset($listChanels[$key]);
+            }
+        }
+
+        return $listChanels ? : false;
+    }
+
+    protected function filterNews($doctrine, Array $listNews)
+    {
+        $repository = $doctrine->getRepository('AndreyRssReaderBundle:News');
+
+        foreach($listNews as $key => $news) {
+            if ($res = $repository->findByHashCode($news['hashCode'])) {
+                unset($listNews[$key]);
+            }
+        }
+
+        return $listNews ? : false;
+    }
+
+    public function getAllChanels($doctrine)
+    {
+        return $doctrine->getRepository('AndreyRssReaderBundle:Chanels')->findAll();
     }
 } 
