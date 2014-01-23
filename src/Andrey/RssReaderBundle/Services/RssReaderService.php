@@ -87,4 +87,11 @@ class RssReaderService {
 
         return $listNews;
     }
+
+    public function getDomainName($link)
+    {
+        preg_match('/^http\:\/\/(.*?)\/.*/i', $link . '/', $matches);
+
+        return $matches[1];
+    }
 }

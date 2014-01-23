@@ -10,6 +10,10 @@ body {
     width: 800px;
 }
 
+.indexHello {
+    text-align: center;
+}
+
 .footer {
     margin: 0 auto;
     height: 200px;

@@ -12,22 +12,50 @@ class DefaultController extends Controller
 
     public function allAction()
     {
+        $service  = $this->get('RssReaderService.service');
         $doctrine = $this->getDoctrine();
         $model    = $this->get('RssReaderModel.model');
+        $allNews  = $model->getAllNews($doctrine);
+
+        foreach($allNews as $news) {
+            $news->setLink($service->getDomainName($news->getLink()));
+        }
 
         return $this->render(
             'AndreyRssReaderBundle:Default:all.html.twig',
-                array('allNews' => $model->getAllNews($doctrine)));
+                array('allNews' => $allNews));
     }
 
     public function sourceAction()
     {
-        return $this->render('AndreyRssReaderBundle:Default:source.html.twig');
+        $doctrine = $this->getDoctrine();
+        $model    = $this->get('RssReaderModel.model');
+
+        return $this->render(
+            'AndreyRssReaderBundle:Default:source.html.twig',
+                array('chanels' => $model->getChanelsWithCountNews($doctrine))
+        );
+    }
+
+    public function sourcenewsAction($id)
+    {
+        $service  = $this->get('RssReaderService.service');
+        $doctrine = $this->getDoctrine();
+        $model    = $this->get('RssReaderModel.model');
+        $allNews  = $model->getNewsByChanel($doctrine, $id);
+
+        foreach($allNews as $news) {
+            $news->setLink($service->getDomainName($news->getLink()));
+        }
+
+        return $this->render(
+            'AndreyRssReaderBundle:Default:sourcenews.html.twig',
+                array('news' => $allNews)
+        );
     }
 
     public function newsAction($id)
     {
-        echo var_dump($id);
         $doctrine = $this->getDoctrine();
         $model    = $this->get('RssReaderModel.model');
 

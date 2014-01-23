@@ -108,6 +108,23 @@ class Model {
 
     public function getAllNews($doctrine)
     {
-        return $doctrine->getRepository('AndreyRssReaderBundle:News')->findBy(array(), array('pubDate'=>'asc'));
+        return $doctrine->getRepository('AndreyRssReaderBundle:News')->findBy(array(), array('pubDate'=>'desc'));
+    }
+
+    public function getChanelsWithCountNews($doctrine)
+    {
+        $qb = $doctrine->getManager()->createQueryBuilder();
+        $query = $qb->select('chanels.id, chanels.title, chanels.link, count(news.id) as count_news')
+                    ->from('AndreyRssReaderBundle:Chanels', 'chanels')
+                    ->innerJoin('AndreyRssReaderBundle:News', 'news', 'WITH', 'chanels.id = news.chanelId')
+                    ->groupBy('chanels.id')
+                    ->getQuery();
+
+        return $query->getResult();
+    }
+
+    public function getNewsByChanel($doctrine, $id)
+    {
+        return $doctrine->getRepository('AndreyRssReaderBundle:News')->findByChanelId($id);
     }
 } 

@@ -7,6 +7,9 @@ andrey_rss_reader_allpage:
 andrey_rss_reader_sourcepage:
     pattern:  /rss_reader/source/
     defaults: { _controller: AndreyRssReaderBundle:Default:source }
+andrey_rss_reader_sourcenewspage:
+    pattern:  /rss_reader/sourcenews/{id}/
+    defaults: { _controller: AndreyRssReaderBundle:Default:sourcenews }
 andrey_rss_reader_newspage:
     pattern:  /rss_reader/news/{id}/
     defaults: { _controller: AndreyRssReaderBundle:Default:news }

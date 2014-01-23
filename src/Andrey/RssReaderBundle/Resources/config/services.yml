@@ -7,6 +7,8 @@ services:
 #        arguments: [@service_id, "plain_value", %parameter%]
      RssReaderService.service:
          class: Andrey\RssReaderBundle\Services\RssReaderService
+     Paginator.service:
+         class: Andrey\RssReaderBundle\Services\Paginator
      RssReaderModel.model:
          class: Andrey\RssReaderBundle\Models\Model
 
