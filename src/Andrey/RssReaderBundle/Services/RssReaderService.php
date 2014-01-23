@@ -4,9 +4,6 @@ namespace Andrey\RssReaderBundle\Services;
 use Symfony\Component\DependencyInjection\SimpleXMLElement;
 use \Exception;
 class RssReaderService {
-    protected $_listChannels = array();
-    protected $_listNews     = array();
-
     public function updateMethod($kernel, $doctrine, $model)
     {
         $response = array();
