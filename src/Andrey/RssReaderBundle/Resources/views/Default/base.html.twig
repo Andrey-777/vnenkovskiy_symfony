@@ -5,34 +5,36 @@
     <title>{% block title %}Rss reader{% endblock %}</title>
 </head>
 <body>
-<div id="header">
-    {% block header %}
-        <p class="headerTitle">News</p>
-    {% endblock %}
-</div>
-<div class="menu">
-    {% block menu %}
-        <ul>
-            <li class="menu_item">
-                <a href="">Главная</a>
-            </li>
-            <li class="menu_item">
-                <a href="">Все новости</a>
-            </li>
-            <li class="menu_item">
-                <a href="">Источники</a>
-            </li>
-        </ul>
-    {% endblock %}
-</div>
-<div id="content">
-    {% block body %}
-    {% endblock %}
-</div>
-<div id="footer">
-    {% block footer %}
-        <p>Footer</p>
-    {% endblock %}
-</div>
+    <div class="main">
+        <div id="header">
+            {% block header %}
+                <p class="headerTitle">News</p>
+            {% endblock %}
+        </div>
+        <div class="menu">
+            {% block menu %}
+                <ul>
+                    <li class="menu_item">
+                        <a href="">Главная</a>
+                    </li>
+                    <li class="menu_item">
+                        <a href="">Все новости</a>
+                    </li>
+                    <li class="menu_item">
+                        <a href="">Источники</a>
+                    </li>
+                </ul>
+            {% endblock %}
+        </div>
+        <div id="content">
+            {% block body %}
+            {% endblock %}
+        </div>
+        <div id="footer">
+            {% block footer %}
+                <p>Footer</p>
+            {% endblock %}
+        </div>
+    </div>
 </body>
 </html>
