@@ -6,14 +6,14 @@ body {
     margin: 0 auto;
     padding: 1px;
     height: 200px;
-    background-color: #BC0A06;
+    background-color: #4b5cbc;
     width: 800px;
 }
 
 .footer {
     margin: 0 auto;
     height: 200px;
-    background-color: #BC0A06;
+    background-color: #4B5CBC;
     width: 800px;
 }
 
@@ -84,7 +84,7 @@ body {
     font-weight:bold;
 }
 
-.page {
+.main {
     position:relative;
     width: 800px;
     padding:5px 10px;

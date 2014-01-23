@@ -100,4 +100,14 @@ class Model {
     {
         return $doctrine->getRepository('AndreyRssReaderBundle:Chanels')->findAll();
     }
+
+    public function getNewsById($doctrine, $id)
+    {
+        return $doctrine->getRepository('AndreyRssReaderBundle:News')->find($id);
+    }
+
+    public function getAllNews($doctrine)
+    {
+        return $doctrine->getRepository('AndreyRssReaderBundle:News')->findBy(array(), array('pubDate'=>'asc'));
+    }
 } 

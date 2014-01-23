@@ -3,10 +3,13 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>{% block title %}Rss reader{% endblock %}</title>
+    {% stylesheets '@AndreyRssReaderBundle/Resources/public/css/*' filter='cssrewrite' %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
 </head>
 <body>
     <div class="main">
-        <div id="header">
+        <div class="header">
             {% block header %}
                 <p class="headerTitle">News</p>
             {% endblock %}
@@ -15,24 +18,23 @@
             {% block menu %}
                 <ul>
                     <li class="menu_item">
-                        <a href="">Главная</a>
+                        <a href="http://symfony/rss_reader">Главная</a>
                     </li>
                     <li class="menu_item">
-                        <a href="">Все новости</a>
+                        <a href="http://symfony/rss_reader/all">Все новости</a>
                     </li>
                     <li class="menu_item">
-                        <a href="">Источники</a>
+                        <a href="http://symfony/rss_reader/source">Источники</a>
                     </li>
                 </ul>
             {% endblock %}
         </div>
-        <div id="content">
+        <div class="content">
             {% block body %}
             {% endblock %}
         </div>
-        <div id="footer">
+        <div class="footer">
             {% block footer %}
-                <p>Footer</p>
             {% endblock %}
         </div>
     </div>
