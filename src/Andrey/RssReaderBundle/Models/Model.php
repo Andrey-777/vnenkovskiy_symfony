@@ -106,14 +106,15 @@ class Model {
         return $doctrine->getRepository('AndreyRssReaderBundle:News')->find($id);
     }
 
-    public function getAllNews($doctrine)
+    public function getAllNews($doctrine, $count, $start)
     {
-        return $doctrine->getRepository('AndreyRssReaderBundle:News')->findBy(array(), array('pubDate'=>'desc'));
+        return $doctrine->getRepository('AndreyRssReaderBundle:News')
+            ->findBy(array(), array('pubDate'=>'desc'), $count, $start * $count);
     }
 
     public function getChanelsWithCountNews($doctrine)
     {
-        $qb = $doctrine->getManager()->createQueryBuilder();
+        $qb    = $doctrine->getManager()->createQueryBuilder();
         $query = $qb->select('chanels.id, chanels.title, chanels.link, count(news.id) as count_news')
                     ->from('AndreyRssReaderBundle:Chanels', 'chanels')
                     ->innerJoin('AndreyRssReaderBundle:News', 'news', 'WITH', 'chanels.id = news.chanelId')
@@ -126,5 +127,14 @@ class Model {
     public function getNewsByChanel($doctrine, $id)
     {
         return $doctrine->getRepository('AndreyRssReaderBundle:News')->findByChanelId($id);
+    }
+
+    public function getCountNews($doctrine)
+    {
+        $qb    = $doctrine->getManager()->createQueryBuilder();
+        $query = $qb->select('count(news.id)')
+                    ->from('AndreyRssReaderBundle:News', 'news')
+                    ->getQuery();
+        return $query->getResult();
     }
 } 

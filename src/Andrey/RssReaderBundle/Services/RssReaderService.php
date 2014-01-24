@@ -4,6 +4,8 @@ namespace Andrey\RssReaderBundle\Services;
 use Symfony\Component\DependencyInjection\SimpleXMLElement;
 use \Exception;
 class RssReaderService {
+    const COUNT_NEWS_ON_PAGE = 15;
+
     public function updateMethod($kernel, $doctrine, $model)
     {
         $response = array();

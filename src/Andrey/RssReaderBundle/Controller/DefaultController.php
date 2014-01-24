@@ -5,17 +5,26 @@ namespace Andrey\RssReaderBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class DefaultController extends Controller
 {
+    const COUNT_NEWS_ON_PAGE = 15;
+
     public function indexAction()
     {
         return $this->render('AndreyRssReaderBundle:Default:index.html.twig');
     }
 
-    public function allAction()
+    public function allAction($page)
     {
         $service  = $this->get('RssReaderService.service');
         $doctrine = $this->getDoctrine();
         $model    = $this->get('RssReaderModel.model');
-        $allNews  = $model->getAllNews($doctrine);
+        $allNews  = $model->getAllNews($doctrine, self::COUNT_NEWS_ON_PAGE, $page);
+
+$countNews = $model->getCountNews($doctrine);
+$paginSer = $this->get('Paginator.service');
+$pagin = $paginSer->paginator($page, $countNews[0][1], self::COUNT_NEWS_ON_PAGE);
+echo var_dump($pagin);
+
+
 
         foreach($allNews as $news) {
             $news->setLink($service->getDomainName($news->getLink()));
