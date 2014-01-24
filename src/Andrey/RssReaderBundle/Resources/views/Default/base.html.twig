@@ -33,6 +33,31 @@
             {% block body %}
             {% endblock %}
         </div>
+        <div class="paginator">
+            {% block paginator %}
+                {% if showPagin %}
+                    {% if paginator.hasPreviousPage %}
+                        <a href="http://symfony/rss_reader/all/{{ paginator.previousPage }}" class="pagin">< Previous Page</a>
+                    {% endif %}
+                    {% if paginator.isFirstPage %}
+                        <a href="http://symfony/rss_reader/all/{{ paginator.firstPage }}" class="pagin">{{ paginator.firstPage }}</a> . . .
+                    {% endif %}
+                    {% for i in paginator.startFor..paginator.endFor %}
+                        {% if i == page %}
+                            <a href="http://symfony/rss_reader/all/{{ i }}" class="selectPagin" style="color: #F41713; padding: 0px 5px;">{{ i }}</a>
+                        {% else %}
+                            <a href="http://symfony/rss_reader/all/{{ i }}" class="pagin" style="padding: 0px 5px;">{{ i }} </a>
+                        {% endif %}
+                    {% endfor %}
+                    {% if paginator.isLastPage %}
+                        . . . <a href="http://symfony/rss_reader/all/{{ paginator.isLastPage }}" class="pagin">{{ paginator.lastPage }}</a>
+                    {% endif %}
+                    {% if paginator.hasNextPage %}
+                        <a href="http://symfony/rss_reader/all/{{ paginator.nextPage }}" class="pagin">Next Page ></a>
+                    {% endif %}
+                {% endif %}
+            {% endblock %}
+        </div>
         <div class="footer">
             {% block footer %}
             {% endblock %}

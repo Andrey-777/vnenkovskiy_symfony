@@ -65,7 +65,7 @@ class RssReaderService {
                 } else {
                     $news['enclosure']   = property_exists($itemNews, 'enclosure') ? $itemNews->enclosure['url'] : '';
                 }
-                $news['pubDate']    = $itemNews->pubDate;
+                $news['pubDate']    = date('Y-m-d H:i:s', strtotime($itemNews->pubDate));
                 $news['linkChanel'] = $sxml->channel->link;
                 $listNews[] = $news;
             }

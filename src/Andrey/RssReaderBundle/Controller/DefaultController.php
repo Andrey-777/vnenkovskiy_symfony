@@ -9,7 +9,10 @@ class DefaultController extends Controller
 
     public function indexAction()
     {
-        return $this->render('AndreyRssReaderBundle:Default:index.html.twig');
+        return $this->render(
+            'AndreyRssReaderBundle:Default:index.html.twig',
+                array('showPagin' => false)
+                );
     }
 
     public function allAction($page)
@@ -20,11 +23,8 @@ class DefaultController extends Controller
         $allNews  = $model->getAllNews($doctrine, self::COUNT_NEWS_ON_PAGE, $page);
 
 $countNews = $model->getCountNews($doctrine);
-$paginSer = $this->get('Paginator.service');
-$pagin = $paginSer->paginator($page, $countNews[0][1], self::COUNT_NEWS_ON_PAGE);
-echo var_dump($pagin);
-
-
+$paginSer  = $this->get('Paginator.service');
+$pagin     = $paginSer->paginator($page, $countNews[0][1], self::COUNT_NEWS_ON_PAGE);
 
         foreach($allNews as $news) {
             $news->setLink($service->getDomainName($news->getLink()));
@@ -32,7 +32,11 @@ echo var_dump($pagin);
 
         return $this->render(
             'AndreyRssReaderBundle:Default:all.html.twig',
-                array('allNews' => $allNews));
+                array('allNews'   => $allNews,
+                      'paginator' => $pagin,
+                      'page'      => $page,
+                      'showPagin' => true
+                ));
     }
 
     public function sourceAction()
@@ -42,8 +46,9 @@ echo var_dump($pagin);
 
         return $this->render(
             'AndreyRssReaderBundle:Default:source.html.twig',
-                array('chanels' => $model->getChanelsWithCountNews($doctrine))
-        );
+                array('chanels' => $model->getChanelsWithCountNews($doctrine),
+                      'showPagin' => false)
+                );
     }
 
     public function sourcenewsAction($id)
@@ -60,7 +65,7 @@ echo var_dump($pagin);
         return $this->render(
             'AndreyRssReaderBundle:Default:sourcenews.html.twig',
                 array('news' => $allNews)
-        );
+                );
     }
 
     public function newsAction($id)
@@ -70,7 +75,9 @@ echo var_dump($pagin);
 
         return $this->render(
             'AndreyRssReaderBundle:Default:news.html.twig',
-                array('news' => $model->getNewsById($doctrine, $id)));
+                array('news'      => $model->getNewsById($doctrine, $id),
+                      'showPagin' => false
+                ));
     }
 
     public function updateAction()
@@ -83,6 +90,6 @@ echo var_dump($pagin);
         return $this->render(
             'AndreyRssReaderBundle:Default:updateResponse.html.twig',
                 $service->updateMethod($kernel, $doctrine, $model)
-        );
+                );
     }
 }

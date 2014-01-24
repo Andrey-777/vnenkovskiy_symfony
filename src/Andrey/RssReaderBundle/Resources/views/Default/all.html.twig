@@ -8,7 +8,7 @@
             <p>
                 Все новости по источнику: <a href="http://symfony/rss_reader/sourcenews/{{ itemNews.chanelId }}">{{ itemNews.link }}</a>
             </p>
-            <p>{{ itemNews.pubDate|date("d/m/Y H:i") }}</p>
+            <p>{{ itemNews.pubDate }}</p>
         </div>
     {% endfor %}
 {% endblock %}

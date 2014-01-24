@@ -109,7 +109,7 @@ class Model {
     public function getAllNews($doctrine, $count, $start)
     {
         return $doctrine->getRepository('AndreyRssReaderBundle:News')
-            ->findBy(array(), array('pubDate'=>'desc'), $count, $start * $count);
+                ->findBy(array(), array('pubDate'=>'desc'), $count, $start != 1 ? $count * ($start - 1) : 0);
     }
 
     public function getChanelsWithCountNews($doctrine)
