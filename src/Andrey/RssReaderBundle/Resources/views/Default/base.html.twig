@@ -33,9 +33,9 @@
             {% block body %}
             {% endblock %}
         </div>
-        <div class="paginator">
-            {% block paginator %}
-                {% if showPagin %}
+        {% if showPagin %}
+            <div class="paginator">
+                {% block paginator %}
                     {% if paginator.hasPreviousPage %}
                         <a href="http://symfony/rss_reader/all/{{ paginator.previousPage }}" class="pagin">< Previous Page</a>
                     {% endif %}
@@ -55,9 +55,9 @@
                     {% if paginator.hasNextPage %}
                         <a href="http://symfony/rss_reader/all/{{ paginator.nextPage }}" class="pagin">Next Page ></a>
                     {% endif %}
-                {% endif %}
-            {% endblock %}
-        </div>
+                {% endblock %}
+            </div>
+        {% endif %}
         <div class="footer">
             {% block footer %}
             {% endblock %}

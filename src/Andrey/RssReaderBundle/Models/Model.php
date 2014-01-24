@@ -106,10 +106,18 @@ class Model {
         return $doctrine->getRepository('AndreyRssReaderBundle:News')->find($id);
     }
 
-    public function getAllNews($doctrine, $count, $start)
+    public function getAllNews($doctrine, $count, $start, $rssService)
     {
-        return $doctrine->getRepository('AndreyRssReaderBundle:News')
-                ->findBy(array(), array('pubDate'=>'desc'), $count, $start != 1 ? $count * ($start - 1) : 0);
+        $allNews = $doctrine->getRepository('AndreyRssReaderBundle:News')
+                        ->findBy(array(), array('pubDate'=>'desc'),
+                            $count,
+                            $start != 1 ? $count * ($start - 1) : 0);
+
+        foreach($allNews as $news) {
+            $news->setLink($rssService->getDomainName($news->getLink()));
+        }
+
+        return $allNews;
     }
 
     public function getChanelsWithCountNews($doctrine)
@@ -124,17 +132,31 @@ class Model {
         return $query->getResult();
     }
 
-    public function getNewsByChanel($doctrine, $id)
+    public function getNewsByChanel($doctrine, $id, $count, $start, $rssService)
     {
-        return $doctrine->getRepository('AndreyRssReaderBundle:News')->findByChanelId($id);
+        $news = $doctrine->getRepository('AndreyRssReaderBundle:News')
+                        ->findBy(array('chanelId' => $id),
+                                 array('pubDate'=>'desc'),
+                                 $count,
+                                 $start != 1 ? $count * ($start - 1) : 0);
+
+        foreach($news as $itemNews) {
+            $itemNews->setLink($rssService->getDomainName($itemNews->getLink()));
+        }
+
+        return $news;
     }
 
-    public function getCountNews($doctrine)
+    public function getCountNews($doctrine, $id = null)
     {
-        $qb    = $doctrine->getManager()->createQueryBuilder();
-        $query = $qb->select('count(news.id)')
-                    ->from('AndreyRssReaderBundle:News', 'news')
-                    ->getQuery();
-        return $query->getResult();
+        $qb     = $doctrine->getManager()->createQueryBuilder();
+        $query = $qb->select('count(news.id)')->from('AndreyRssReaderBundle:News', 'news');
+
+        if ($id) {
+            $query->where('news.chanelId = ' . $id);
+        }
+
+        $result = $query->getQuery()->getResult();
+        return $result[0][1];
     }
 } 

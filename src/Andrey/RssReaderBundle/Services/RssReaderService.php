@@ -96,4 +96,14 @@ class RssReaderService {
 
         return $matches[1];
     }
+
+    public function getPaginator($doctrine, $paginService, $model, $countOnPage, $page, $sourceId = null)
+    {
+        if ($sourceId) {
+            return $paginService->paginator($page, $model->getCountNews($doctrine, $sourceId), $countOnPage);
+        } else {
+            return $paginService->paginator($page, $model->getCountNews($doctrine), $countOnPage);
+        }
+
+    }
 }
