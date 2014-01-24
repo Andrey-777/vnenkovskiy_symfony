@@ -25,11 +25,9 @@ class RssReaderUpdateCommand extends ContainerAwareCommand
 
         $resultsUpdate = $service->updateMethod($kernel, $doctrine, $model);
 
-        $write  = 'Update';
-        $write .= !$resultsUpdate['chanels'] && !$resultsUpdate['news'] ? " unsuccessful\n" : " successful\n";
-        $write .= 'Count of new chanels: ' . $resultsUpdate['chanels']
-            . "\n" . 'Count of new news: ' . $resultsUpdate['news'];
+        $response = '<info>' . "Update successful\nCount of new chanels: " . $resultsUpdate['chanels']
+                  . "\n" . 'Count of new news: ' . $resultsUpdate['news'] . '</info>';
 
-        $output->writeln($write);
+        $output->writeln($response);
     }
 }
