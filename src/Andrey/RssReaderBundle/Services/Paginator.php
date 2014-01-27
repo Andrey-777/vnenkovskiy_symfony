@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: avnenkovskyi
- * Date: 1/23/14
- * Time: 6:05 PM
- */
-
 namespace Andrey\RssReaderBundle\Services;
 
 
@@ -27,7 +20,7 @@ class Paginator {
         $pages['isLastPage']      = $numberPage < ($countPages - $pagesOnPage) ? true : false;
 
         if ($numberPage == $countPages) {
-            $pages['startFor'] = $numberPage - $pagesOnPage;
+            $pages['startFor'] = $numberPage - $pagesOnPage < 0 ? 1 : $numberPage - $pagesOnPage;
             $pages['endFor']   = $numberPage;
         } else {
             $pages['startFor'] = $numberPage > $pagesOnPage ? $numberPage - $pagesOnPage : 1;
@@ -36,7 +29,6 @@ class Paginator {
                     ? $countPages
                     : $numberPage + $pagesOnPage;
         }
-
         return $pages;
     }
 } 

@@ -3,11 +3,12 @@
 namespace Andrey\RssReaderBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 class DefaultController extends Controller
 {
     const COUNT_NEWS_ON_PAGE = 15;
 
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         return $this->render(
             'AndreyRssReaderBundle:Default:index.html.twig',
@@ -21,11 +22,12 @@ class DefaultController extends Controller
 
         return $this->render(
             'AndreyRssReaderBundle:Default:all.html.twig',
-            array('allNews'   => $services['model']->getAllNews($services['doctrine'], self::COUNT_NEWS_ON_PAGE, $page,
+            array('allNews'     => $services['model']->getAllNews($services['doctrine'], self::COUNT_NEWS_ON_PAGE, $page,
                                                                 $services['rssService']),
-                  'page'      => $page,
-                  'showPagin' => true,
-                  'paginator' => $services['rssService']->getPaginator($services['doctrine'],
+                  'page'        => $page,
+                  'urlForPagin' => 'http://symfony/rss_reader/all/',
+                  'showPagin'   => true,
+                  'paginator'   => $services['rssService']->getPaginator($services['doctrine'],
                                                                        $services['paginService'],
                                                                        $services['model'],
                                                                        self::COUNT_NEWS_ON_PAGE, $page)
@@ -49,12 +51,13 @@ class DefaultController extends Controller
 
         return $this->render(
             'AndreyRssReaderBundle:Default:sourcenews.html.twig',
-                array('news'      => $services['model']->getNewsByChanel($services['doctrine'], $id,
+                array('news'        => $services['model']->getNewsByChanel($services['doctrine'], $id,
                                                                          self::COUNT_NEWS_ON_PAGE,
                                                                          $page, $services['rssService']),
-                      'page'      => $page,
-                      'showPagin' => true,
-                      'paginator' => $services['rssService']->getPaginator($services['doctrine'],
+                      'page'        => $page,
+                      'urlForPagin' => "http://symfony/rss_reader/sourcenews/id/$id/page/",
+                      'showPagin'   => true,
+                      'paginator'   => $services['rssService']->getPaginator($services['doctrine'],
                                                                            $services['paginService'],
                                                                            $services['model'],
                                                                            self::COUNT_NEWS_ON_PAGE, $page, $id)
@@ -84,7 +87,8 @@ class DefaultController extends Controller
 
     protected function getServices($action)
     {
-        $services = array('doctrine' => $this->getDoctrine(), 'model' => $this->get('RssReaderModel.model'));
+        $services = array('doctrine' => $this->getDoctrine(),
+                          'model'    => $this->get('RssReaderModel.model'));
 
         if ($action == 'all' || $action == 'sourcenews') {
             $services['rssService']   = $this->get('RssReaderService.service');
