@@ -6,7 +6,9 @@ use Andrey\RssReaderBundle\Entity\News;
 class Model {
     public function insertChanels($doctrine, Array $listChanels)
     {
-        if(!$listChanels = $this->filterChanels($doctrine, $listChanels)) {
+        $listChanels = $this->filterChanels($doctrine, $listChanels);
+
+        if(!$listChanels) {
             return 0;
         }
 
@@ -16,7 +18,7 @@ class Model {
         foreach ($listChanels as $itemChanel) {
             $chanel = new Chanels();
             $chanel->setTitle($itemChanel['title']);
-            $chanel->setLink($itemChanel['link']);
+            $chanel->setLink($itemChanel['link'])->replace();
 
             $em->persist($chanel);
 
@@ -36,7 +38,9 @@ class Model {
 
     public function insertNews($doctrine, Array $listNews)
     {
-        if(!$listNews = $this->filterNews($doctrine, $listNews)) {
+        $listNews = $this->filterNews($doctrine, $listNews);
+
+        if(!$listNews) {
             return 0;
         }
 
