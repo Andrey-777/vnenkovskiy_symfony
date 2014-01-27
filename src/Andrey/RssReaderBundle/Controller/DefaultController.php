@@ -18,86 +18,56 @@ class DefaultController extends Controller
 
     public function allAction($page)
     {
-        $services = $this->getServices('all');
-
         return $this->render(
             'AndreyRssReaderBundle:Default:all.html.twig',
-            array('allNews'     => $services['model']->getAllNews($services['doctrine'], self::COUNT_NEWS_ON_PAGE, $page,
-                                                                $services['rssService']),
+            array('allNews'     => $this->get('RssReaderModel.model')
+                                        ->getAllNews(self::COUNT_NEWS_ON_PAGE, $page),
                   'page'        => $page,
                   'urlForPagin' => 'http://symfony/rss_reader/all/',
                   'showPagin'   => true,
-                  'paginator'   => $services['rssService']->getPaginator($services['doctrine'],
-                                                                       $services['paginService'],
-                                                                       $services['model'],
-                                                                       self::COUNT_NEWS_ON_PAGE, $page)
+                  'paginator'   => $this->get('RssReaderService.service')
+                                        ->getPaginator(self::COUNT_NEWS_ON_PAGE, $page)
             ));
     }
 
     public function sourceAction()
     {
-        $services = $this->getServices('source');
-
         return $this->render(
             'AndreyRssReaderBundle:Default:source.html.twig',
-                array('chanels'   => $services['model']->getChanelsWithCountNews($services['doctrine']),
+                array('chanels'   => $this->get('RssReaderModel.model')->getChanelsWithCountNews(),
                       'showPagin' => false)
                 );
     }
 
     public function sourcenewsAction($id, $page)
     {
-        $services = $this->getServices('sourcenews');
-
         return $this->render(
             'AndreyRssReaderBundle:Default:sourcenews.html.twig',
-                array('news'        => $services['model']->getNewsByChanel($services['doctrine'], $id,
-                                                                         self::COUNT_NEWS_ON_PAGE,
-                                                                         $page, $services['rssService']),
+                array('news'        => $this->get('RssReaderModel.model')
+                                            ->getNewsByChanel($id, self::COUNT_NEWS_ON_PAGE, $page),
                       'page'        => $page,
                       'urlForPagin' => "http://symfony/rss_reader/sourcenews/id/$id/page/",
                       'showPagin'   => true,
-                      'paginator'   => $services['rssService']->getPaginator($services['doctrine'],
-                                                                           $services['paginService'],
-                                                                           $services['model'],
-                                                                           self::COUNT_NEWS_ON_PAGE, $page, $id)
+                      'paginator'   => $this->get('RssReaderService.service')
+                                            ->getPaginator(self::COUNT_NEWS_ON_PAGE, $page, $id)
                 ));
     }
 
     public function newsAction($id)
     {
-        $services = $this->getServices('news');
-
         return $this->render(
             'AndreyRssReaderBundle:Default:news.html.twig',
-                array('news'      => $services['model']->getNewsById($services['doctrine'], $id),
+                array('news'      => $this->get('RssReaderModel.model')
+                                          ->getNewsById($id),
                       'showPagin' => false
                 ));
     }
 
     public function updateAction()
     {
-        $services = $this->getServices('update');
-
         return $this->render(
             'AndreyRssReaderBundle:Default:updateResponse.html.twig',
-                $services['rssService']->updateMethod($services['kernel'], $services['doctrine'], $services['model'])
-                );
-    }
-
-    protected function getServices($action)
-    {
-        $services = array('doctrine' => $this->getDoctrine(),
-                          'model'    => $this->get('RssReaderModel.model'));
-
-        if ($action == 'all' || $action == 'sourcenews') {
-            $services['rssService']   = $this->get('RssReaderService.service');
-            $services['paginService'] = $this->get('Paginator.service');
-        } elseif ($action == 'update') {
-            $services['rssService'] = $this->get('RssReaderService.service');
-            $services['kernel']     = $this->get('kernel');
-        }
-
-        return $services;
+            $this->get('RssReaderService.service')->updateMethod()
+        );
     }
 }

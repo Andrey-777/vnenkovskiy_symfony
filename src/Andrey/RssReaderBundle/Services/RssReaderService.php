@@ -4,27 +4,36 @@ namespace Andrey\RssReaderBundle\Services;
 use Symfony\Component\DependencyInjection\SimpleXMLElement;
 use \Exception;
 class RssReaderService {
-    const COUNT_NEWS_ON_PAGE = 15;
+    protected $_kernelService = null;
+    protected $_modelService  = null;
+    protected $_paginService  = null;
 
-    public function updateMethod($kernel, $doctrine, $model)
+    public function __construct($kernel, $pagin, $model)
+    {
+        $this->_kernelService = $kernel;
+        $this->_paginService  = $pagin;
+        $this->_modelService  = $model;
+    }
+
+    public function updateMethod()
     {
         $response = array();
 
-        $linksToRss     = $this->_getContentFile($kernel);
+        $linksToRss     = $this->_getContentFile();
         $contentRss     = $this->_getContentRss($linksToRss);
         $chanelsAndNews = $this->_populateNewsAndChanel($contentRss);
 
-        $response['chanels']    = $model->insertChanels($doctrine, $chanelsAndNews['chanels']);
-        $chanelsAndNews['news'] = $this->chanelToNews($chanelsAndNews['news'], $model, $doctrine);
-        $response['news']       = $model->insertNews($doctrine, $chanelsAndNews['news']);
+        $response['chanels']    = $this->_modelService->insertChanels($chanelsAndNews['chanels']);
+        $chanelsAndNews['news'] = $this->chanelToNews($chanelsAndNews['news']);
+        $response['news']       = $this->_modelService->insertNews($chanelsAndNews['news']);
 
         return $response;
     }
 
-    protected function _getContentFile($kernel)
+    protected function _getContentFile()
     {
         try {
-            $content    = file_get_contents($kernel->locateResource('@AndreyRssReaderBundle/Files/links.txt'));
+            $content    = file_get_contents($this->_kernelService->locateResource('@AndreyRssReaderBundle/Files/links.txt'));
             $linksToRss = array_filter(explode("\r\n", $content));
 
             return $linksToRss;
@@ -74,9 +83,9 @@ class RssReaderService {
         return array('chanels' => $listChannels, 'news' => $listNews);
     }
 
-    protected function chanelToNews($listNews, $model, $doctrine)
+    protected function chanelToNews($listNews)
     {
-        $allChanels = $model->getAllChanels($doctrine);
+        $allChanels = $this->_modelService->getAllChanels();
 
         foreach ($allChanels as $row) {
             foreach ($listNews as $key => $itemNews) {
@@ -90,20 +99,12 @@ class RssReaderService {
         return $listNews;
     }
 
-    public function getDomainName($link)
-    {
-        preg_match('/^http\:\/\/(.*?)\/.*/i', $link . '/', $matches);
-
-        return $matches[1];
-    }
-
-    public function getPaginator($doctrine, $paginService, $model, $countOnPage, $page, $sourceId = null)
+    public function getPaginator($countOnPage, $page, $sourceId = null)
     {
         if ($sourceId) {
-            return $paginService->paginator($page, $model->getCountNews($doctrine, $sourceId), $countOnPage);
+            return $this->_paginService->paginator($page, $this->_modelService->getCountNews($sourceId), $countOnPage);
         } else {
-            return $paginService->paginator($page, $model->getCountNews($doctrine), $countOnPage);
+            return $this->_paginService->paginator($page, $this->_modelService->getCountNews(), $countOnPage);
         }
-
     }
 }
