@@ -45,35 +45,55 @@ class DefaultController extends Controller
 
     public function sourceAction()
     {
-        return $this->render(
-            'AndreyRssReaderBundle:Default:source.html.twig',
-                array('chanels'   => $this->get('RssReaderModel.model')->getChanelsWithCountNews(),
-                      'showPagin' => false)
-                );
+        try {
+            return $this->render(
+                'AndreyRssReaderBundle:Default:source.html.twig',
+                    array('chanels'   => $this->get('RssReaderModel.model')->getChanelsWithCountNews(),
+                          'showPagin' => false)
+                    );
+        } catch (Exception $e) {
+            file_put_contents(
+                $this->get('kernel')->locateResource('@AndreyRssReaderBundle/Files/logs/error.txt'),
+                $e->getMessage());
+        }
+
     }
 
     public function sourcenewsAction($id, $page)
     {
-        return $this->render(
-            'AndreyRssReaderBundle:Default:sourcenews.html.twig',
-                array('news'        => $this->get('RssReaderModel.model')
-                                            ->getNewsByChanel($id, self::COUNT_NEWS_ON_PAGE, $page),
-                      'page'        => $page,
-                      'urlForPagin' => "http://symfony/rss_reader/sourcenews/id/$id/page/",
-                      'showPagin'   => true,
-                      'paginator'   => $this->get('RssReaderService.service')
-                                            ->getPaginator(self::COUNT_NEWS_ON_PAGE, $page, $id)
-                ));
+        try {
+            return $this->render(
+                'AndreyRssReaderBundle:Default:sourcenews.html.twig',
+                    array('news'        => $this->get('RssReaderModel.model')
+                                                ->getNewsByChanel($id, self::COUNT_NEWS_ON_PAGE, $page),
+                          'page'        => $page,
+                          'urlForPagin' => "http://symfony/rss_reader/sourcenews/id/$id/page/",
+                          'showPagin'   => true,
+                          'paginator'   => $this->get('RssReaderService.service')
+                                                ->getPaginator(self::COUNT_NEWS_ON_PAGE, $page, $id)
+                    ));
+        } catch (Exception $e) {
+            file_put_contents(
+                $this->get('kernel')->locateResource('@AndreyRssReaderBundle/Files/logs/error.txt'),
+                $e->getMessage());
+        }
+
     }
 
     public function newsAction($id)
     {
-        return $this->render(
-            'AndreyRssReaderBundle:Default:news.html.twig',
-                array('news'      => $this->get('RssReaderModel.model')
-                                          ->getNewsById($id),
-                      'showPagin' => false
-                ));
+        try {
+            return $this->render(
+                'AndreyRssReaderBundle:Default:news.html.twig',
+                    array('news'      => $this->get('RssReaderModel.model')
+                                              ->getNewsById($id),
+                          'showPagin' => false
+                    ));
+        } catch (Exception $e) {
+            file_put_contents(
+                $this->get('kernel')->locateResource('@AndreyRssReaderBundle/Files/logs/error.txt'),
+                $e->getMessage());
+        }
     }
 
     public function updateAction()
