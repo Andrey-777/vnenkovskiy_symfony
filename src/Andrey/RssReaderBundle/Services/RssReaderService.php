@@ -7,6 +7,8 @@ class RssReaderService {
     protected $_kernelService = null;
     protected $_modelService  = null;
     protected $_paginService  = null;
+    protected $_listChanels   = array();
+    protected $_listNews      = array();
 
     public function __construct($kernel, $pagin, $model)
     {
@@ -17,15 +19,12 @@ class RssReaderService {
 
     public function updateMethod()
     {
-        $response = array();
+        $contentRss     = $this->_getContentRss($this->_getContentFile());
+        $this->_populateNewsAndChanel($contentRss);
 
-        $linksToRss     = $this->_getContentFile();
-        $contentRss     = $this->_getContentRss($linksToRss);
-        $chanelsAndNews = $this->_populateNewsAndChanel($contentRss);
-
-        $response['chanels']    = $this->_modelService->insertChanels($chanelsAndNews['chanels']);
-        $chanelsAndNews['news'] = $this->chanelToNews($chanelsAndNews['news']);
-        $response['news']       = $this->_modelService->insertNews($chanelsAndNews['news']);
+        $response['chanels'] = $this->_modelService->insertChanels($this->_listChanels);
+        $this->chanelToNews();
+        $response['news']    = $this->_modelService->insertNews($this->_listNews);
 
         return $response;
     }
@@ -53,13 +52,10 @@ class RssReaderService {
 
     protected function _populateNewsAndChanel($contentsRss)
     {
-        $listChannels = array();
-        $listNews     = array();
-
         foreach ($contentsRss as $keyXMLFile => $itemXMLFile) {
             $sxml = new SimpleXMLElement($itemXMLFile, LIBXML_NOCDATA);
-            $listChannels[$keyXMLFile]['title'] = (string)$sxml->channel->title;
-            $listChannels[$keyXMLFile]['link']  = (string)$sxml->channel->link;
+            $this->_listChanels[$keyXMLFile]['title'] = (string)$sxml->channel->title;
+            $this->_listChanels[$keyXMLFile]['link']  = (string)$sxml->channel->link;
 
             foreach ($sxml->channel->item as $keyNews => $itemNews) {
                 $news['title']       = $itemNews->title;
@@ -76,27 +72,21 @@ class RssReaderService {
                 }
                 $news['pubDate']    = date('Y-m-d H:i:s', strtotime($itemNews->pubDate));
                 $news['linkChanel'] = $sxml->channel->link;
-                $listNews[] = $news;
+                $this->_listNews[]  = $news;
             }
         }
-
-        return array('chanels' => $listChannels, 'news' => $listNews);
     }
 
-    protected function chanelToNews($listNews)
+    protected function chanelToNews()
     {
-        $allChanels = $this->_modelService->getAllChanels();
+        foreach ($this->_modelService->getAllChanels() as $itemChanel) {
+            foreach ($this->_listNews as $key => $itemNews) {
 
-        foreach ($allChanels as $row) {
-            foreach ($listNews as $key => $itemNews) {
-
-                if ($itemNews['linkChanel'] == $row->getLink()) {
-                    $listNews[$key]['linkChanel'] = $row->getId();
+                if ($itemNews['linkChanel'] == $itemChanel->getLink()) {
+                    $this->_listNews[$key]['linkChanel'] = $itemChanel->getId();
                 }
             }
         }
-
-        return $listNews;
     }
 
     public function getPaginator($countOnPage, $page, $sourceId = null)
