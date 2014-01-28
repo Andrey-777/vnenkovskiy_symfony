@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset={{ _charset }}"/>
+        <meta name="robots" content="noindex,nofollow" />
+        <title>{% block title %}{% endblock %}</title>
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        <div id="content">
+            <div class="header clear-fix">
+                <div class="search">
+                    <form method="get" action="http://symfony.com/search" target="_blank">
+                        <div class="form-row">
+                        </div>
+                   </form>
+                </div>
+            </div>
+
+            <div class="sf-reset">
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+    </body>
+</html>
