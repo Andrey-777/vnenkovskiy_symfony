@@ -21,8 +21,7 @@ class RssReaderService {
 
     public function updateMethod()
     {
-        $contentRss = $this->_getContentRss($this->_getContentFile());
-        $this->_populateNewsAndChanel($contentRss);
+        $this->_populateNewsAndChanel($this->_getContentRss($this->_getContentFile()));
 
         $response['chanels'] = $this->_modelService->insertChanels($this->_listChanels);
         $this->chanelToNews();
