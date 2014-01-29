@@ -4,6 +4,9 @@ namespace Andrey\RssReaderBundle\Models;
 class Model {
     protected $_doctrine   = null;
 
+    const BATCH_INSERT_CHANELS = 20;
+    const BATCH_INSERT_NEWS    = 50;
+
     public function __construct($doctrine)
     {
         $this->_doctrine   = $doctrine;
@@ -23,7 +26,7 @@ class Model {
         foreach ($listChanels as $chanel) {
             $em->persist($chanel);
 
-            if (($i % 20) == 0) {
+            if (($i % self::BATCH_INSERT_CHANELS) == 0) {
                 $em->flush();
                 $em->clear();
             }
@@ -52,7 +55,7 @@ class Model {
         foreach ($listNews as $news) {
             $em->persist($news);
 
-            if (($i % 20) == 0) {
+            if (($i % self::BATCH_INSERT_NEWS) == 0) {
                 $em->flush();
                 $em->clear();
             }

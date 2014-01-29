@@ -11,6 +11,7 @@ class RssReaderService {
     protected $_paginService  = null;
     protected $_listChanels   = array();
     protected $_listNews      = array();
+    protected $_chanelUrls    = array('http://tsn.ua/');
 
     public function __construct($kernel, $pagin, $model)
     {
@@ -70,10 +71,8 @@ class RssReaderService {
                      ->setPubDate(date('Y-m-d H:i:s', strtotime($itemNews->pubDate)))
                      ->setChanelId($sxml->channel->link);
 
-                if ((string)$sxml->channel->link == 'http://tsn.ua/') {
-                    preg_match_all('/<img(?:\\s[^<>]*?)?\\bsrc\\s*=\\s*(?|"([^"]*)"|\'([^\']*)\'|([^<>\'"\\s]*))[^<>]*>/i',
-                        (string)$itemNews->description, $matches);
-                    $news->setImage($matches[1][0]);
+                if (in_array((string)$sxml->channel->link, $this->_chanelUrls)) {
+                    $news->setImage($this->_listenerChanels((string)$sxml->channel->link, $itemNews));
                 } else {
                     $news->setImage(property_exists($itemNews, 'enclosure') ? $itemNews->enclosure['url'] : '');
                 }
@@ -94,6 +93,17 @@ class RssReaderService {
         }
     }
 
+    protected function _listenerChanels($url, $news)
+    {
+        switch($url) {
+            case 'http://tsn.ua/':
+                preg_match_all('/<img(?:\\s[^<>]*?)?\\bsrc\\s*=\\s*(?|"([^"]*)"|\'([^\']*)\'|([^<>\'"\\s]*))[^<>]*>/i',
+                    (string)$news->description, $matches);
+                return $matches[1][0];
+                break;
+        }
+    }
+
     public function getPaginator($countOnPage, $page, $sourceId = null)
     {
         if ($sourceId) {
@@ -102,4 +112,6 @@ class RssReaderService {
             return $this->_paginService->paginator($page, $this->_modelService->getCountNews(), $countOnPage);
         }
     }
+
+
 }
