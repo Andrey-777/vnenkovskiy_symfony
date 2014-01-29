@@ -1,8 +1,6 @@
 <?php
 namespace Andrey\RssReaderBundle\Models;
 
-use Andrey\RssReaderBundle\Entity\Chanels;
-use Andrey\RssReaderBundle\Entity\News;
 class Model {
     protected $_doctrine   = null;
 
@@ -11,7 +9,7 @@ class Model {
         $this->_doctrine   = $doctrine;
     }
 
-    public function insertChanels(Array $listChanels)
+    public function insertChanels(array $listChanels)
     {
         $listChanels = $this->filterChanels($listChanels);
 
@@ -22,11 +20,7 @@ class Model {
         $em = $this->_doctrine->getManager();
         $i = 0;
 
-        foreach ($listChanels as $itemChanel) {
-            $chanel = new Chanels();
-            $chanel->setTitle($itemChanel['title']);
-            $chanel->setLink($itemChanel['link']);
-
+        foreach ($listChanels as $chanel) {
             $em->persist($chanel);
 
             if (($i % 20) == 0) {
@@ -43,7 +37,7 @@ class Model {
         return $i;
     }
 
-    public function insertNews(Array $listNews)
+    public function insertNews(array $listNews)
     {
         $listNews = $this->filterNews($listNews);
 
@@ -55,16 +49,7 @@ class Model {
 
         $i = 1;
 
-        foreach ($listNews as $itemNews) {
-            $news = new News();
-            $news->setTitle($itemNews['title']);
-            $news->setLink($itemNews['link']);
-            $news->setDescription($itemNews['description']);
-            $news->setImage($itemNews['enclosure']);
-            $news->setPubDate($itemNews['pubDate']);
-            $news->setChanelId($itemNews['linkChanel']);
-            $news->setHashCode($itemNews['hashCode']);
-
+        foreach ($listNews as $news) {
             $em->persist($news);
 
             if (($i % 20) == 0) {
@@ -81,12 +66,12 @@ class Model {
         return $i;
     }
 
-    protected function filterChanels(Array $listChanels)
+    protected function filterChanels(array $listChanels)
     {
         $repository = $this->_doctrine->getRepository('AndreyRssReaderBundle:Chanels');
 
         foreach($listChanels as $key => $chanel) {
-            if ($res = $repository->findByLink($chanel['link'])) {
+            if ($res = $repository->findByLink($chanel->getLink())) {
                 unset($listChanels[$key]);
             }
         }
@@ -94,12 +79,12 @@ class Model {
         return $listChanels ? : false;
     }
 
-    protected function filterNews(Array $listNews)
+    protected function filterNews(array $listNews)
     {
         $repository = $this->_doctrine->getRepository('AndreyRssReaderBundle:News');
 
         foreach($listNews as $key => $news) {
-            if ($res = $repository->findByHashCode($news['hashCode'])) {
+            if ($res = $repository->findByHashCode($news->getHashCode())) {
                 unset($listNews[$key]);
             }
         }
@@ -163,7 +148,7 @@ class Model {
         return $result[0][1];
     }
 
-    public function changeDomainName(Array $news)
+    public function changeDomainName(array $news)
     {
         foreach($news as $itemNews) {
             preg_match('/^http\:\/\/(.*?)\/.*/i', $itemNews->getLink() . '/', $matches);

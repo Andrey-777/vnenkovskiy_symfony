@@ -2,6 +2,8 @@
 namespace Andrey\RssReaderBundle\Services;
 
 use Symfony\Component\DependencyInjection\SimpleXMLElement;
+use Andrey\RssReaderBundle\Entity\Chanels;
+use Andrey\RssReaderBundle\Entity\News;
 use \Exception;
 class RssReaderService {
     protected $_kernelService = null;
@@ -52,26 +54,31 @@ class RssReaderService {
 
     protected function _populateNewsAndChanel($contentsRss)
     {
-        foreach ($contentsRss as $keyXMLFile => $itemXMLFile) {
-            $sxml = new SimpleXMLElement($itemXMLFile, LIBXML_NOCDATA);
-            $this->_listChanels[$keyXMLFile]['title'] = (string)$sxml->channel->title;
-            $this->_listChanels[$keyXMLFile]['link']  = (string)$sxml->channel->link;
+        foreach ($contentsRss as $itemXMLFile) {
+            $sxml   = new SimpleXMLElement($itemXMLFile, LIBXML_NOCDATA);
+            $chanel = new Chanels();
+            $chanel->setTitle($sxml->channel->title)
+                   ->setLink($sxml->channel->link);
 
-            foreach ($sxml->channel->item as $keyNews => $itemNews) {
-                $news['title']       = $itemNews->title;
-                $news['link']        = $itemNews->link;
-                $news['description'] = strip_tags($itemNews->description);
-                $news['hashCode']    = md5($itemNews->description);
+            $this->_listChanels[] = $chanel;
+
+            foreach ($sxml->channel->item as $itemNews) {
+                $news = new News();
+                $news->setTitle($itemNews->title)
+                     ->setLink($itemNews->link)
+                     ->setDescription(htmlspecialchars(strip_tags($itemNews->description)))
+                     ->setHashCode(md5($itemNews->description))
+                     ->setPubDate(date('Y-m-d H:i:s', strtotime($itemNews->pubDate)))
+                     ->setChanelId($sxml->channel->link);
 
                 if ((string)$sxml->channel->link == 'http://tsn.ua/') {
                     preg_match_all('/<img(?:\\s[^<>]*?)?\\bsrc\\s*=\\s*(?|"([^"]*)"|\'([^\']*)\'|([^<>\'"\\s]*))[^<>]*>/i',
                         (string)$itemNews->description, $matches);
-                    $news['enclosure'] = $matches[1][0];
+                    $news->setImage($matches[1][0]);
                 } else {
-                    $news['enclosure'] = property_exists($itemNews, 'enclosure') ? $itemNews->enclosure['url'] : '';
+                    $news->setImage(property_exists($itemNews, 'enclosure') ? $itemNews->enclosure['url'] : '');
                 }
-                $news['pubDate']    = date('Y-m-d H:i:s', strtotime($itemNews->pubDate));
-                $news['linkChanel'] = $sxml->channel->link;
+
                 $this->_listNews[]  = $news;
             }
         }
@@ -80,10 +87,9 @@ class RssReaderService {
     protected function chanelToNews()
     {
         foreach ($this->_modelService->getAllChanels() as $itemChanel) {
-            foreach ($this->_listNews as $key => $itemNews) {
-
-                if ($itemNews['linkChanel'] == $itemChanel->getLink()) {
-                    $this->_listNews[$key]['linkChanel'] = $itemChanel->getId();
+            foreach ($this->_listNews as $key => $news) {
+                if ($news->getChanelId() == $itemChanel->getLink()) {
+                    $this->_listNews[$key]->setChanelId($itemChanel->getId());
                 }
             }
         }
