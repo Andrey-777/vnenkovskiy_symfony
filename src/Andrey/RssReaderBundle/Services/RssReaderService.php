@@ -25,7 +25,7 @@ class RssReaderService {
         $this->_populateNewsAndChanel($this->_getContentRss($this->_getContentFile()));
 
         $response['chanels'] = $this->_modelService->insertChanels($this->_listChanels);
-        $this->chanelToNews();
+        $this->_chanelToNews();
         $response['news']    = $this->_modelService->insertNews($this->_listNews);
 
         return $response;
@@ -34,10 +34,17 @@ class RssReaderService {
     protected function _getContentFile()
     {
         try {
-            $content    = file_get_contents($this->_kernelService->locateResource('@AndreyRssReaderBundle/Files/links.txt'));
-            $linksToRss = array_filter(explode("\r\n", $content));
-
-            return $linksToRss;
+            return array_filter(explode(
+                "\n",
+                str_replace(
+                    "\r",
+                    '',
+                    file_get_contents(
+                        $this->_kernelService->locateResource('@AndreyRssReaderBundle/Files/links.txt')
+                    )
+                )
+                )
+            );
         } catch (Exception $e) {
             $this->errorMessage =  $e->getMessage();
         }
@@ -69,20 +76,15 @@ class RssReaderService {
                      ->setDescription(htmlspecialchars(strip_tags($itemNews->description)))
                      ->setHashCode(md5($itemNews->description))
                      ->setPubDate(date('Y-m-d H:i:s', strtotime($itemNews->pubDate)))
-                     ->setChanelId($sxml->channel->link);
-
-                if (in_array((string)$sxml->channel->link, $this->_chanelUrls)) {
-                    $news->setImage($this->_listenerChanels((string)$sxml->channel->link, $itemNews));
-                } else {
-                    $news->setImage(property_exists($itemNews, 'enclosure') ? $itemNews->enclosure['url'] : '');
-                }
+                     ->setChanelId($sxml->channel->link)
+                     ->setImage($this->_listenerChanels((string)$sxml->channel->link, $itemNews));
 
                 $this->_listNews[]  = $news;
             }
         }
     }
 
-    protected function chanelToNews()
+    protected function _chanelToNews()
     {
         foreach ($this->_modelService->getAllChanels() as $itemChanel) {
             foreach ($this->_listNews as $key => $news) {
@@ -95,6 +97,10 @@ class RssReaderService {
 
     protected function _listenerChanels($url, $news)
     {
+        if (!in_array($url, $this->_chanelUrls)) {
+            return property_exists($news, 'enclosure') ? $news->enclosure['url'] : '';
+        }
+
         switch($url) {
             case 'http://tsn.ua/':
                 preg_match_all('/<img(?:\\s[^<>]*?)?\\bsrc\\s*=\\s*(?|"([^"]*)"|\'([^\']*)\'|([^<>\'"\\s]*))[^<>]*>/i',
