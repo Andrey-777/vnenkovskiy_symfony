@@ -172,7 +172,7 @@ class Model {
 
         if (!$this->getIsError()) {
             $this->_logger->info('Select all news successfully completed');
-            return $news;
+            return $this->_changeDomainName($news);
         }
     }
 
@@ -257,6 +257,7 @@ class Model {
         foreach($news as $itemNews) {
             preg_match('/^http\:\/\/(.*?)\/.*/i', $itemNews->getLink() . '/', $matches);
             $itemNews->setLink($matches[1]);
+            echo var_dump($itemNews->getLink());
         }
         return $news;
     }
