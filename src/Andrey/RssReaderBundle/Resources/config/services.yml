@@ -1,0 +1,16 @@
+parameters:
+#    andrey_rss_reader.example.class: Andrey\RssReaderBundle\Example
+
+services:
+     RssReaderService.service:
+         class: Andrey\RssReaderBundle\Services\RssReaderService
+         arguments: [@kernel, @Paginator.service, @RssReaderModel.model, @logger]
+         tags:
+             - { name: monolog.logger, channel: rss }
+     Paginator.service:
+         class: Andrey\RssReaderBundle\Services\Paginator
+     RssReaderModel.model:
+         class: Andrey\RssReaderBundle\Models\Model
+         arguments: [@doctrine, @logger]
+         tags:
+             - { name: monolog.logger, channel: rss }

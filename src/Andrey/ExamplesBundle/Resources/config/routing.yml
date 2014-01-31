@@ -1,0 +1,3 @@
+andrey_examples_homepage:
+    pattern:  /examples
+    defaults: { _controller: AndreyExamplesBundle:Default:index }

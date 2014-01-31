@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{% block title %}Rss reader{% endblock %}</title>
+    {% stylesheets '@AndreyRssReaderBundle/Resources/public/css/*' filter='cssrewrite' %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+</head>
+<body>
+    <div class="main">
+        <div class="header">
+            {% block header %}
+                <p class="headerTitle">News</p>
+            {% endblock %}
+        </div>
+        <div class="menu">
+            {% block menu %}
+                <ul>
+                    <li class="menu_item">
+                        <a href="http://symfony/rss_reader">Главная</a>
+                    </li>
+                    <li class="menu_item">
+                        <a href="http://symfony/rss_reader/all">Все новости</a>
+                    </li>
+                    <li class="menu_item">
+                        <a href="http://symfony/rss_reader/source">Источники</a>
+                    </li>
+                </ul>
+            {% endblock %}
+        </div>
+        <div class="content">
+            {% block body %}
+            {% endblock %}
+        </div>
+        {% if showPagin %}
+            <div class="paginator">
+                {% block paginator %}
+                    {% if paginator.hasPreviousPage %}
+                        <a href="{{ url }}{{ paginator.previousPage }}" class="pagin">< Previous Page</a>
+                    {% endif %}
+                    {% if paginator.isFirstPage %}
+                        <a href="{{ url }}{{ paginator.firstPage }}" class="pagin">{{ paginator.firstPage }}</a> . . .
+                    {% endif %}
+                    {% for i in paginator.startFor..paginator.endFor %}
+                        {% if i == page %}
+                            <a href="{{ url }}{{ i }}" class="selectPagin" style="color: #F41713; padding: 0px 5px;">{{ i }}</a>
+                        {% else %}
+                            <a href="{{ url }}{{ i }}" class="pagin" style="padding: 0px 5px;">{{ i }} </a>
+                        {% endif %}
+                    {% endfor %}
+                    {% if paginator.isLastPage %}
+                        . . . <a href="{{ url }}{{ paginator.lastPage }}" class="pagin" style="padding: 0px 5px;">{{ paginator.lastPage }}</a>
+                    {% endif %}
+                    {% if paginator.hasNextPage %}
+                        <a href="{{ url }}{{ paginator.nextPage }}" class="pagin">Next Page ></a>
+                    {% endif %}
+                {% endblock %}
+            </div>
+        {% endif %}
+        <div class="footer">
+            {% block footer %}
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>

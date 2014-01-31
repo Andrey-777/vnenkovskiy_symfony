@@ -1,0 +1,27 @@
+Andrey\RssReaderBundle\Entity\News:
+    type: entity
+    table: null
+    repositoryClass: Andrey\RssReaderBundle\Entity\NewsRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        title:
+            type: text
+        link:
+            type: text
+        description:
+            type: text
+        image:
+            type: text
+        pubDate:
+            type: text
+        chanelId:
+            type: text
+            column: chanel_id
+        hashCode:
+            type: text
+    lifecycleCallbacks: {  }

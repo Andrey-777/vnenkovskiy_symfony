@@ -1,0 +1,14 @@
+{% extends 'AndreyRssReaderBundle:Default:base.html.twig' %}
+{% block body %}
+    <h3>
+        <a href="{{ news.link }}">{{ news.title }}</a>
+    </h3>
+    {% if news.image %}
+        <a href="{{ news.link }}">
+            <img class="imgNews" src="{{ news.image }}" style="max-width: 460px; height: 300px;"/>
+        </a>
+    {% endif %}
+    <p>{{ news.description }}</p>
+    <p>Источник : <a href="{{ news.link }}">{{ news.link }}</a>
+    <p>{{ news.pubDate|date("d/m/Y H:i") }}</p>
+{% endblock %}

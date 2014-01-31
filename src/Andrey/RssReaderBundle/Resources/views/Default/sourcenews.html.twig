@@ -1,0 +1,13 @@
+{% extends 'AndreyRssReaderBundle:Default:base.html.twig' %}
+{% block body %}
+    {% for itemNews in news %}
+        <div class="itemNews">
+            <h3>
+                <a href="http://symfony/rss_reader/news/{{ itemNews.id }}">{{ itemNews.title }}</a>
+            </h3>
+            <p>Источник : <a href="http://{{ itemNews.link }}">{{ itemNews.link }}</a></p>
+            <p>{{ itemNews.pubDate|date('d/m/Y H:i') }}</p>
+        </div>
+    {% endfor %}
+{% endblock %}
+{% set url = urlForPagin %}

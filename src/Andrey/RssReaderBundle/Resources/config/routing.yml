@@ -1,0 +1,18 @@
+andrey_rss_reader_homepage:
+    pattern:  /rss_reader/
+    defaults: { _controller: AndreyRssReaderBundle:Default:index }
+andrey_rss_reader_allpage:
+    pattern:  /rss_reader/all/{page}
+    defaults: { _controller: AndreyRssReaderBundle:Default:all, page: 1 }
+andrey_rss_reader_sourcepage:
+    pattern:  /rss_reader/source/
+    defaults: { _controller: AndreyRssReaderBundle:Default:source }
+andrey_rss_reader_sourcenewspage:
+    pattern:  /rss_reader/sourcenews/id/{id}/page/{page}
+    defaults: { _controller: AndreyRssReaderBundle:Default:sourcenews, page: 1 }
+andrey_rss_reader_newspage:
+    pattern:  /rss_reader/news/{id}/
+    defaults: { _controller: AndreyRssReaderBundle:Default:news }
+andrey_rss_reader_updatepage:
+    pattern:  /rss_reader/update/
+    defaults: { _controller: AndreyRssReaderBundle:Default:update }
