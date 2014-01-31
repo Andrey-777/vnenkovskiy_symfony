@@ -9,11 +9,11 @@ class RssReaderService {
     protected $_kernelService = null;
     protected $_modelService  = null;
     protected $_paginService  = null;
+    protected $_logger        = null;
     protected $_listChanels   = array();
     protected $_listNews      = array();
     protected $_chanelUrls    = array('http://tsn.ua/');
-    protected $_logger        = null;
-    protected $_error         = false;
+    protected $_isError       = false;
 
     public function __construct($kernel, $pagin, $model, $logger)
     {
@@ -30,7 +30,7 @@ class RssReaderService {
         $this->_chanelToNews();
         $response['news']    = $this->_modelService->insertNews($this->_listNews);
 
-        $this->_error ? : $this->_logger->info('update successfully completed');
+        $this->_isError ? : $this->_logger->info('update successfully completed');
 
         return $response;
     }
@@ -53,7 +53,7 @@ class RssReaderService {
                 )
             );
         } catch (Exception $e) {
-            $this->_error = true;
+            $this->_isError = true;
             $this->_logger->err('Unable to load ' . $localResource . ' file');
         }
     }
@@ -67,7 +67,7 @@ class RssReaderService {
 
             return $contentRss;
         } catch (Exception $e) {
-            $this->_error = true;
+            $this->_isError = true;
             $this->_logger->err('Unable to load ' . $itemLinkRss . ' file');
         }
     }
@@ -97,7 +97,7 @@ class RssReaderService {
                 }
             }
         } catch (Exception $e) {
-            $this->_error = true;
+            $this->_isError = true;
             $this->_logger->err($e->getMessage());
         }
     }
@@ -113,7 +113,7 @@ class RssReaderService {
                 }
             }
         } catch (Exception $e) {
-            $this->_error = true;
+            $this->_isError = true;
             $this->_logger->err($e->getMessage());
         }
     }
@@ -133,7 +133,7 @@ class RssReaderService {
                     break;
             }
         } catch (Exception $e) {
-            $this->_error = true;
+            $this->_isError = true;
             $this->_logger->err($e->getMessage());
         }
     }
@@ -147,7 +147,7 @@ class RssReaderService {
                 return $this->_paginService->paginator($page, $this->_modelService->getCountNews(), $countOnPage);
             }
         } catch (Exception $e) {
-            $this->_error = true;
+            $this->_isError = true;
             $this->_logger->err($e->getMessage());
         }
     }

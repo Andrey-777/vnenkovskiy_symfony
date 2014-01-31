@@ -11,4 +11,6 @@ services:
          class: Andrey\RssReaderBundle\Services\Paginator
      RssReaderModel.model:
          class: Andrey\RssReaderBundle\Models\Model
-         arguments: [@doctrine]
+         arguments: [@doctrine, @logger]
+         tags:
+             - { name: monolog.logger, channel: rss }
