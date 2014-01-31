@@ -67,3 +67,14 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+
+monolog:
+    handlers:
+        main:
+            type:     stream
+            path:     %kernel.root_dir%/%kernel.environment%.log
+            channels: [!rss]
+        rss:
+            type:     stream
+            path:     %kernel.logs_dir%/%kernel.environment%.rss.log
+            channels: [rss]
