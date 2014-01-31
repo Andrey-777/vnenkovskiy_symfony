@@ -1,20 +1,14 @@
-<<<<<<< HEAD
 andrey_my_sql_terminal:
     resource: "@AndreyMySqlTerminalBundle/Resources/config/routing.yml"
-=======
 andrey_rss_reader:
     resource: "@AndreyRssReaderBundle/Resources/config/routing.yml"
     prefix:   /
-
 andrey_examples:
     resource: "@AndreyExamplesBundle/Resources/config/routing.yml"
     prefix:   /
-
 andrey_crud:
     resource: "@AndreyCrudBundle/Resources/config/routing.yml"
->>>>>>> rss
     prefix:   /
-
 andrey_crud:
     resource: "@AndreyCrudBundle/Resources/config/routing.yml"
     prefix:   /

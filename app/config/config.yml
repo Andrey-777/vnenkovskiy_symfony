@@ -68,16 +68,12 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
-
-<<<<<<< HEAD
 services:
     model.service:
         class: Andrey\MySqlTerminalBundle\Models\MysqlterminalModel
     service.service:
         class: Andrey\MySqlTerminalBundle\Services\MysqlterminalService
 
-
-=======
 monolog:
     handlers:
         main:
@@ -88,4 +84,3 @@ monolog:
             type:     stream
             path:     %kernel.logs_dir%/%kernel.environment%.rss.log
             channels: [rss]
->>>>>>> rss
