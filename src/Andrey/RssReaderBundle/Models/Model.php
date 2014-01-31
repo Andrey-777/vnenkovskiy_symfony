@@ -43,11 +43,11 @@ class Model {
             $em->flush();
             $em->clear();
         } catch(DBALException $e) {
-            $this->_isError = true;
+            $this->_setIsError(true);
             $this->_logger->err($e->getMessage());
         }
 
-        if (!$this->_isError) {
+        if (!$this->getIsError()) {
             $this->_logger->info('Insert channels successfully completed');
             return $i;
         }
@@ -82,11 +82,11 @@ class Model {
 
             return $i;
         } catch(DBALException $e) {
-            $this->_isError = true;
+            $this->_setIsError(true);
             $this->_logger->err($e->getMessage());
         }
 
-        if (!$this->_isError) {
+        if (!$this->getIsError()) {
             $this->_logger->info('Insert news successfully completed');
             return $i;
         }
@@ -125,11 +125,11 @@ class Model {
         try {
             $channels = $this->_doctrine->getRepository('AndreyRssReaderBundle:Chanels')->findAll();
         } catch(NoResultException $e) {
-            $this->_isError = true;
+            $this->_setIsError(true);
             $this->_logger->err($e->getMessage());
         }
 
-        if (!$this->_isError) {
+        if (!$this->getIsError()) {
             $this->_logger->info('Select all channels successfully completed');
             return $channels;
         }
@@ -142,11 +142,11 @@ class Model {
         try {
             $news = $this->_doctrine->getRepository('AndreyRssReaderBundle:News')->find($id);
         } catch(NoResultException $e) {
-            $this->_isError = true;
+            $this->_setIsError(true);
             $this->_logger->err($e->getMessage());
         }
 
-        if (!$this->_isError) {
+        if (!$this->getIsError()) {
             $this->_logger->info("Select news with $id id successfully completed");
             return $news;
         }
@@ -166,11 +166,11 @@ class Model {
                                             $page != 1 ? $count * ($page - 1) : 0
                                     );
         } catch (NoResultException $e) {
-            $this->_isError = true;
+            $this->_setIsError(true);
             $this->_logger->err($e->getMessage());
         }
 
-        if (!$this->_isError) {
+        if (!$this->getIsError()) {
             $this->_logger->info('Select all news successfully completed');
             return $news;
         }
@@ -191,14 +191,14 @@ class Model {
 
             $result = $query->getResult();
         } catch(DBALException $e) {
-            $this->_isError = true;
+            $this->_setIsError(true);
             $this->_logger->err($e->getMessage());
         } catch(NoResultException $e) {
-            $this->_isError = true;
+            $this->_setIsError(true);
             $this->_logger->err($e->getMessage());
         }
 
-        if (!$this->_isError) {
+        if (!$this->getIsError()) {
             $this->_logger->info('Select channel with count news successfully completed');
             return $result;
         }
@@ -215,13 +215,13 @@ class Model {
                                      $count,
                                      $start != 1 ? $count * ($start - 1) : 0);
         } catch(NoResultException $e) {
-            $this->_isError = true;
+            $this->_setIsError(true);
             $this->_logger->err($e->getMessage());
         }
 
-        if (!$this->_isError) {
+        if (!$this->getIsError()) {
             $this->_logger->info('Select news by id channel successfully completed');
-            return $this->changeDomainName($news);
+            return $this->_changeDomainName($news);
         }
     }
 
@@ -239,23 +239,35 @@ class Model {
 
             $result = $query->getQuery()->getResult();
         } catch(DBALException $e) {
+            $this->_setIsError(true);
             $this->_logger->err($e->getMessage());
         } catch(NoResultException $e) {
+            $this->_setIsError(true);
             $this->_logger->err($e->getMessage());
         }
 
-        if (!$this->_isError) {
+        if (!$this->getIsError()) {
             $this->_logger->info('Select count news successfully completed');
             return $result[0][1];
         }
     }
 
-    public function changeDomainName(array $news)
+    protected function _changeDomainName(array $news)
     {
         foreach($news as $itemNews) {
             preg_match('/^http\:\/\/(.*?)\/.*/i', $itemNews->getLink() . '/', $matches);
             $itemNews->setLink($matches[1]);
         }
         return $news;
+    }
+
+    public function  getIsError()
+    {
+        return $this->_isError;
+    }
+
+    protected function _setIsError($param)
+    {
+        $this->_isError = $param;
     }
 } 

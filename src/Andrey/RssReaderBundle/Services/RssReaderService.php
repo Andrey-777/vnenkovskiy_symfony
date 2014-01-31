@@ -30,7 +30,7 @@ class RssReaderService {
         $this->_chanelToNews();
         $response['news']    = $this->_modelService->insertNews($this->_listNews);
 
-        $this->_isError ? : $this->_logger->info('update successfully completed');
+        $this->getIsError() ? : $this->_logger->info('update successfully completed');
 
         return $response;
     }
@@ -53,7 +53,7 @@ class RssReaderService {
                 )
             );
         } catch (Exception $e) {
-            $this->_isError = true;
+            $this->_setIsError(true);
             $this->_logger->err('Unable to load ' . $localResource . ' file');
         }
     }
@@ -67,7 +67,7 @@ class RssReaderService {
 
             return $contentRss;
         } catch (Exception $e) {
-            $this->_isError = true;
+            $this->_setIsError(true);
             $this->_logger->err('Unable to load ' . $itemLinkRss . ' file');
         }
     }
@@ -97,7 +97,7 @@ class RssReaderService {
                 }
             }
         } catch (Exception $e) {
-            $this->_isError = true;
+            $this->_setIsError(true);
             $this->_logger->err($e->getMessage());
         }
     }
@@ -113,7 +113,7 @@ class RssReaderService {
                 }
             }
         } catch (Exception $e) {
-            $this->_isError = true;
+            $this->_setIsError(true);
             $this->_logger->err($e->getMessage());
         }
     }
@@ -133,7 +133,7 @@ class RssReaderService {
                     break;
             }
         } catch (Exception $e) {
-            $this->_isError = true;
+            $this->_setIsError(true);
             $this->_logger->err($e->getMessage());
         }
     }
@@ -147,10 +147,18 @@ class RssReaderService {
                 return $this->_paginService->paginator($page, $this->_modelService->getCountNews(), $countOnPage);
             }
         } catch (Exception $e) {
-            $this->_isError = true;
+            $this->_setIsError(true);
             $this->_logger->err($e->getMessage());
         }
     }
 
+    public function  getIsError()
+    {
+        return $this->_isError;
+    }
 
+    protected function _setIsError($param)
+    {
+        $this->_isError = $param;
+    }
 }
